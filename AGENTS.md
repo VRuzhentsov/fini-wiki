@@ -9,6 +9,14 @@ extend (and override on conflict) the global `~/.config/opencode/AGENTS.md`.
 Maintain a persistent, compounding second brain. Raw sources are immutable;
 wiki pages are LLM-written syntheses that get richer with every ingest.
 
+## Obsidian integration
+
+This wiki lives outside the main Obsidian vault (`~/Documents/`). To use
+Obsidian features (graph view, backlinks, Dataview, Web Clipper), open
+`~/projects/wiki/` as an additional vault via File → Open another vault.
+Wikilinks (`[[page-name]]`) and the `.obsidian/` config created on first
+open are compatible with git and may be committed.
+
 ## Layout
 
 ```
