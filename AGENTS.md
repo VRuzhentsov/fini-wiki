@@ -1,6 +1,7 @@
 # Wiki Schema
 
-This file defines how to operate the LLM Wiki rooted at `~/projects/wiki/`.
+This file defines how to operate the LLM Wiki rooted at `~/projects/fini-wiki/`.
+This wiki is the second brain for the **Fini** project.
 When working inside this directory, treat these rules as authoritative; they
 extend (and override on conflict) the global `~/.config/opencode/AGENTS.md`.
 
@@ -13,14 +14,14 @@ wiki pages are LLM-written syntheses that get richer with every ingest.
 
 This wiki lives outside the main Obsidian vault (`~/Documents/`). To use
 Obsidian features (graph view, backlinks, Dataview, Web Clipper), open
-`~/projects/wiki/` as an additional vault via File → Open another vault.
+`~/projects/fini-wiki/` as an additional vault via File → Open another vault.
 Wikilinks (`[[page-name]]`) and the `.obsidian/` config created on first
 open are compatible with git and may be committed.
 
 ## Layout
 
 ```
-~/projects/wiki/
+~/projects/fini-wiki/
 ├── AGENTS.md          # this schema (you are here)
 ├── index.md           # content catalog (update on every ingest)
 ├── log.md             # chronological activity log (append-only)
