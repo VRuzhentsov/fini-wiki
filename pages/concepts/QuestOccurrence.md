@@ -1,3 +1,12 @@
+---
+title: QuestOccurrence
+type: concept
+created: 2026-04-12
+updated: 2026-04-21
+sources: [2026-04-21-notifications-grilling]
+tags: [fini, quests, occurrence, repeat, reminders]
+---
+
 # QuestOccurrence
 
 Concrete dated instance produced from a [[QuestSeries]]. In UI and MCP, this is represented as a normal actionable quest record ([[Quest]]).
@@ -21,3 +30,11 @@ Concrete dated instance produced from a [[QuestSeries]]. In UI and MCP, this is 
 - Deterministic occurrence `id` prevents duplicates when offline devices generate the same period occurrence.
 - In shared spaces, one completion resolves the occurrence for all paired devices.
 - Completion/abandonment suppresses pending reminders for that occurrence.
+
+## Reminder materialization
+
+Concrete [[Reminder]] rows are created from the series template at occurrence generation time [[sources/2026-04-21-notifications-grilling]].
+
+- When `generate_next_occurrence` (`src-tauri/src/services/quest.rs:146-222`) creates this occurrence, it also inserts concrete `reminders` rows derived from the [[QuestSeries]] reminder template, resolving `mm_offset` against this occurrence's `due_at_utc`.
+- [[os-notification]] OS alarms are scheduled at the same time.
+- Materialized rows replicate via [[SpaceSync]] like any other reminder.

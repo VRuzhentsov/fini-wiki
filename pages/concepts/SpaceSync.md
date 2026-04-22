@@ -2,8 +2,8 @@
 title: SpaceSync
 type: concept
 created: 2026-04-12
-updated: 2026-04-12
-sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline]
+updated: 2026-04-21
+sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling]
 tags: [fini, sync, replication, spaces, websocket]
 ---
 
@@ -144,10 +144,13 @@ Deletes use tombstones with 30-day retention to prevent resurrection on reconnec
 
 ## Reminder semantics
 
-Reminder metadata replicates, but each peer schedules and fires its own local OS notification [[sources/2026-03-29-device-synchronizations-design]].
+Reminder metadata replicates, but each peer schedules and fires its own local OS notification [[sources/2026-03-29-device-synchronizations-design]] [[sources/2026-04-21-notifications-grilling]].
 
 - Reminder records replicate for mapped spaces.
-- Each mapped device schedules and fires its own local OS notification.
+- Each mapped device schedules and fires its own local [[os-notification]].
+- **Peer cancellation**: when a quest's status arrives over sync as `completed` / `abandoned` (or the quest / reminder is deleted), the receiving peer cancels its own pending or visible OS notification for that reminder [[sources/2026-04-21-notifications-grilling]].
+- **Snooze does not replicate**: snooze is notification-level and per-device; it does not emit a sync event and does not touch peers [[sources/2026-04-21-notifications-grilling]]. See [[os-notification#Snooze semantics]].
+- Repeating-quest reminders: the series holds the reminder template; the `generate_next_occurrence` flow materializes concrete `reminders` rows per occurrence, and those rows replicate like any other reminder [[sources/2026-04-21-notifications-grilling]]. See [[QuestSeries]] / [[QuestOccurrence]].
 
 ## Focus semantics
 

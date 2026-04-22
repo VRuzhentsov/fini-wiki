@@ -2,8 +2,8 @@
 title: Focus
 type: concept
 created: 2026-04-12
-updated: 2026-04-12
-sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design]
+updated: 2026-04-21
+sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling]
 tags: [quest, focus, resolver]
 ---
 
@@ -41,6 +41,9 @@ Applied when no FocusHistory event resolves to an active quest:
 - Reminder fire → append [[FocusHistory]] event with `trigger = reminder`.
 - If reminder target is already `completed` or `abandoned` at fire time, reminder is suppressed and no event is written.
 - Completing the reminder-target quest does not mutate the event; resolver simply skips it on next walk because the target is no longer `active`.
+- The [[FocusHistory]] INSERT is performed by the main-process reconciler on engagement (launch/tap), not from the OS-notification callback, with `created_at` backdated to the original fire time [[sources/2026-04-21-notifications-grilling]].
+- **Foreground**: when the app is visible at fire time, Focus still switches (via the reminder event) and a subtle in-app toast is shown; the [[os-notification]] is suppressed to avoid a double-signal [[sources/2026-04-21-notifications-grilling]].
+- Focus does **not** depend on [[os-notification]]. OS notifications depend on Focus + [[Reminder]], not the reverse [[sources/2026-04-21-notifications-grilling]].
 
 ## Manual override
 

@@ -76,9 +76,78 @@
               "icon": "lucide-file",
               "title": "focus-view-daisyui-redesign"
             }
+          },
+          {
+            "id": "02b7d80f714acfc6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "raw/Tauri 2.0 released Can it beat Electron this time.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Tauri 2.0 released Can it beat Electron this time"
+            }
+          },
+          {
+            "id": "001d6f7edefa7177",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pages/entities/tauri.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "tauri"
+            }
+          },
+          {
+            "id": "bf27e6c06ce8e99d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pages/concepts/Quest.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Quest"
+            }
+          },
+          {
+            "id": "e420ca4799241163",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pages/concepts/Quest.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Quest"
+            }
+          },
+          {
+            "id": "6a8666c36fc7cd6b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pages/concepts/Space.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Space"
+            }
           }
-        ],
-        "currentTab": 4
+        ]
       }
     ],
     "direction": "vertical"
@@ -237,13 +306,16 @@
       "bases:Create new base": false
     }
   },
-  "active": "43c67605c5c6f7d8",
+  "active": "9747600c0f4ec5c9",
   "lastOpenFiles": [
+    "pages/concepts/Space.md",
+    "pages/concepts/Quest.md",
+    "pages/entities/tauri.md",
+    "raw/Tauri 2.0 released Can it beat Electron this time.md",
     "pages/concepts/focus-view-daisyui-redesign.md",
     "pages/concepts/diesel-orm.md",
     "pages/sources/2026-04-12-fini-current-data-layer.md",
     "_hot.md",
-    "pages/concepts/Quest.md",
     "space-sync.md",
     "pages/concepts/github-actions-pipelines.md",
     "pages/sources/2026-04-12-fini-current-github-actions.md",
@@ -262,9 +334,6 @@
     "pages/sources/2026-03-23-sync-devices-design.md",
     "pages/sources/2026-03-23-release-gitops-setup.md",
     "pages/sources/2026-03-22-e2e-testing-prd.md",
-    "pages/sources/2026-03-22-mcp-id-migration-notes.md",
-    "pages/sources/2026-03-22-mcp-contract-baseline.md",
-    "pages/sources/2026-03-21-mvp-baseline.md",
     "pages/e2e/space-sync",
     "pages/e2e/skill",
     "pages/e2e/interface",

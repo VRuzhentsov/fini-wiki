@@ -26,14 +26,16 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/concepts/tauri-distribution]] — official guidance for five distribution channels in 2.0 (1 source)
 - [[pages/concepts/capability-based-security]] — general pattern that Tauri's permission model resembles (1 source, inferred)
 - [[pages/concepts/webview-desktop-apps]] — bundled-engine vs platform-WebView trade-offs in desktop web apps (1 source)
-- [[pages/concepts/focus]] — current replacement for `Main`; computed from quest state plus focus-history events (2 sources)
+- [[pages/concepts/focus]] — current replacement for `Main`; computed from quest state plus focus-history events (3 sources)
 - [[pages/concepts/DeviceConnection]] — pairing, discovery, and presence control-plane for multi-device Fini (2 sources)
-- [[pages/concepts/SpaceSync]] — mapped-space replication data-plane with replay, tombstones, and fan-out (2 sources)
-- [[pages/concepts/FocusHistory]] — owner-scoped event log that stores Focus metadata outside quest rows (1 source)
+- [[pages/concepts/SpaceSync]] — mapped-space replication data-plane with replay, tombstones, and fan-out (3 sources)
+- [[pages/concepts/FocusHistory]] — owner-scoped event log; reminder rows written by main-process reconciler with backdated created_at (3 sources)
+- [[pages/concepts/Reminder]] — entity owned by a quest; snooze is now notification-level, delivery goes through [[os-notification]] (3 sources)
 - [[pages/concepts/mcp-contract]] — MCP evolution from string-id migration to structured JSON outputs (3 sources)
 - [[pages/concepts/release-gitops]] — signed-tag GitHub Actions release pipeline with keyless cosign and GHCR publishing (2 sources)
 - [[pages/concepts/github-actions-pipelines]] — current workflow graph with reusable security scan and Linux/Windows/Android release fan-out (2 sources)
 - [[pages/concepts/e2e-testing]] — staged test strategy with MCP contract lane first, browser smoke second, native smoke third (1 source)
+- [[pages/concepts/os-notification]] — platform surface that delivers reminders; scheduling, snooze, cancellation, content (1 source)
 
 ## Sources
 - [[pages/sources/2026-04-12-fini-current-data-layer]] — direct inspection of current Rust backend storage stack: Diesel, schema, models, services, and migration tests
@@ -50,6 +52,7 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/sources/2026-03-23-sync-devices-design]] — archived snapshot noting that `device_sync` was superseded by newer sync docs
 - [[pages/sources/2026-03-28-quest-space-assignment]] — draft UI proposal for exposing quest space assignment and filtering
 - [[pages/sources/2026-03-29-device-synchronizations-design]] — implementation-ready lock for `device_connection`, `space_sync`, and `Focus`
+- [[pages/sources/2026-04-21-notifications-grilling]] — grilling locks OS notifications across Android/Linux/Windows/macOS; snooze is notification-level; focus_history reconciliation with backdated created_at
 
 ## Comparisons & Analyses
 - [[pages/concepts/device-sync-architecture]] — supersession chain from MVP.1 sync intent to archived `device_sync` to current split architecture (3 sources)

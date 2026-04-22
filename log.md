@@ -66,3 +66,8 @@ Append-only chronological record. Parseable: `grep "^## \[" log.md | tail -10`.
 
 - Pages touched: [[pages/concepts/focus-view-daisyui-redesign]], `log.md`
 - Notes: Expanded the design pass from the single `Focus` cockpit to every current app page. Locked the visual direction to a phone-first dark `cockpit` system, explicitly included legacy `Quests` and `Spaces`, and recorded that the current MCP toolset names new section frames cleanly but does not support renaming already-cloned outer phone frames.
+
+## [2026-04-21] ingest | Notifications grilling locks OS surface across 4 platforms
+
+- Pages touched: [[pages/sources/2026-04-21-notifications-grilling]] (new), [[pages/concepts/os-notification]] (new), [[pages/concepts/Reminder]], [[pages/concepts/FocusHistory]], [[pages/concepts/focus]], [[pages/concepts/SpaceSync]], [[pages/concepts/QuestSeries]], [[pages/concepts/QuestOccurrence]], `index.md`
+- Notes: Locked OS notification behavior across Android/Linux/Windows/macOS in a single ticket. Key supersessions: snooze is notification-level (no new reminder row, no focus_history event, no replication) — overrides Reminder's prior 10m/30m/1h presets and one-off-absolute semantics. Introduced the entity-vs-surface split via new `os-notification` page. Locked FocusHistory reconciliation model: main-process-only writes, backdated `created_at`, no background DB. Flagged `focus_history.device_id` for removal (separate ticket). Open TBDs: Linux delivery mechanism, vibration defaults, notification grouping, past-time reminder creation.
