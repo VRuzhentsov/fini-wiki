@@ -2,108 +2,134 @@
 title: Reminder
 type: concept
 created: 2026-04-12
-updated: 2026-04-21
-sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling]
+updated: 2026-04-24
+sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling]
 tags: [fini, reminders, notifications, focus]
 ---
 
 # Reminder
 
-Scheduled notification linked to a [[Quest]] / [[QuestOccurrence]]. Multiple reminders can exist per quest [[sources/2026-03-21-mvp-baseline]].
+Scheduled notification derived from a [[Quest]]'s `due` + `due_time` fields. Each quest with a due date has at most one Reminder row; the row is managed automatically by the backend and has no dedicated UI surface [[sources/2026-04-24-reminder-due-bridge-grilling]].
 
-> Entity vs surface: **Reminder is the entity** (row owned by a quest); the OS notification is the platform surface that delivers it. See [[os-notification]] for surface-level behavior (scheduling, snooze, cancellation) [[sources/2026-04-21-notifications-grilling]].
+> **Entity vs surface:** `Reminder` is the row owned by a quest; the OS notification is the platform surface that delivers it. See [[os-notification]] for surface-level behavior (scheduling, cancellation, permissions) [[sources/2026-04-21-notifications-grilling]].
+
+## Source of truth
+
+The authoritative data lives on the quest row, not the Reminder row [[sources/2026-04-24-reminder-due-bridge-grilling]]:
+
+- Fire time = `quest.due + quest.due_time`, in local wall-clock (see [[#Wall-clock semantics]]).
+- If `quest.due_time` is null, fire time = `quest.due + 09:00 local`.
+- If `quest.due` is null, no Reminder exists.
+- The Reminder row is a derivation; `due_at_utc` stored on it is a cache, not authoritative.
+
+## Bridge rules (backend, in `update_quest`)
+
+Every transition of the quest propagates to the Reminder row [[sources/2026-04-24-reminder-due-bridge-grilling]]:
+
+| Quest change | Reminder effect |
+|---|---|
+| `due` set / changed | Upsert Reminder row; (re)schedule notification. |
+| `due_time` set / changed | Upsert Reminder row; (re)schedule notification. |
+| `due` cleared | Delete Reminder row; cancel notification. |
+| `status` → `completed` / `abandoned` | Delete Reminder row; cancel notification. |
+| `status` → `active` (restore) | Upsert Reminder if `due` is set. |
+| Quest deleted | Reminder row cascades (or explicit delete); cancel notification. |
+
+Reconciliation on app launch (`services/reconciler.rs`) fills gaps — any active quest with a `due` and no Reminder row gets the row created and the notification scheduled [[sources/2026-04-24-reminder-due-bridge-grilling]].
 
 ## Fields
-
-Reminder metadata is part of the persisted domain and also part of the replicated mapped-space dataset in the current sync design [[sources/2026-03-21-mvp-baseline]] [[sources/2026-03-29-device-synchronizations-design]].
 
 | Field | Type | Description |
 |---|---|---|
 | `id` | uuid string | Reminder identifier |
-| `quest_id` | uuid string | Parent quest/occurrence |
-| `type` | enum | `relative` or `absolute` |
-| `mm_offset` | integer \| null | Minutes before `due_at_utc` for `relative` reminders |
-| `due_at_utc` | datetime \| null | Exact trigger time for `absolute` reminders |
+| `quest_id` | uuid string | Parent quest/occurrence (unique — at most one row per quest under the bridge) |
+| `kind` | text | Currently always `'absolute'` in the auto-flow. `'relative'` reserved for future offset support. |
+| `mm_offset` | integer \| null | Unused by the current bridge; reserved for future "notify X min before" support. |
+| `due_at_utc` | datetime \| null | Cached derived UTC. Backend must recompute from quest fields at schedule / fire time — not trusted as source of truth (see [[#Wall-clock semantics]]). |
+| `scheduled_notification_id` | text \| null | OS-scheduler handle (Android AlarmManager, etc.) |
 | `created_at` | datetime | |
 
-## Types
+## Wall-clock semantics
 
-Relative reminders are keyed from quest deadlines; absolute reminders fire at the stored UTC time [[sources/2026-03-21-mvp-baseline]].
+Fire time is **always local wall-clock** [[sources/2026-04-24-reminder-due-bridge-grilling]]:
 
-| Value | Behavior |
-|---|---|
-| `relative` | Triggers `mm_offset` minutes before quest `due_at_utc` |
-| `absolute` | Triggers exactly at reminder `due_at_utc` |
-
-## Common relative presets
-
-Presets for creating relative reminders on a quest [[sources/2026-03-21-mvp-baseline]].
-
-| Label | mm_offset |
-|---|---|
-| 5 minutes before | 5 |
-| 30 minutes before | 30 |
-| 1 hour before | 60 |
-| 1 day before | 1440 |
+- "Apr 30, 10:00" fires at 10:00 local time on the device where the quest is viewed.
+- DST transitions do NOT shift the notification. 10:00 AM stays 10:00 AM.
+- Cross-timezone travel: notification fires at 10:00 local in the new timezone, not at the original absolute UTC instant.
+- Each device recomputes UTC from `quest.due + quest.due_time` using its own current timezone. Two devices in different zones fire the same quest's reminder at different absolute instants — each at its own local wall-clock time.
 
 ## Delivery
 
-Each device is responsible for local OS notification scheduling and delivery [[sources/2026-03-29-device-synchronizations-design]] [[sources/2026-04-21-notifications-grilling]].
+Each device is responsible for local OS notification scheduling and delivery [[sources/2026-03-29-device-synchronizations-design]] [[sources/2026-04-21-notifications-grilling]]:
 
 - Uses OS-level notifications on Android/Linux/Windows/macOS.
-- Scheduling lives at the OS layer (per-platform) — in-process timers are rejected because they cannot deliver while the app is closed [[sources/2026-04-21-notifications-grilling]].
-- **Foreground**: when the app is visible, OS notification is **suppressed**; [[focus|Focus]] switch + in-app toast signal the user instead [[sources/2026-04-21-notifications-grilling]].
-- **Background / minimized / closed**: OS notification fires.
-- Reboot survival: re-arm on app launch + Android `RECEIVE_BOOT_COMPLETED` receiver; other platforms lean on OS scheduler durability [[sources/2026-04-21-notifications-grilling]].
-- Missed-fire grace: if fire time passed within 30 minutes, fire late; older misses are skipped and surfaced as a UI "missed reminders" marker. Grace applies to OS notification only; [[FocusHistory]] reconciliation has no grace window [[sources/2026-04-21-notifications-grilling]].
-- See [[os-notification]] for full surface-level scheduling, content, sound, interaction, and cancellation rules.
+- Scheduling lives at the OS layer (per-platform) where possible; desktop falls back to in-process timers + launch-time reconciliation.
+- Reboot survival: re-arm on app launch + Android `RECEIVE_BOOT_COMPLETED` receiver; other platforms lean on OS scheduler durability.
+- See [[os-notification]] for surface-level scheduling, content, and interaction rules.
+
+### Foreground behavior
+When the app is visible, the OS notification is **suppressed**; [[focus|Focus]] switch + in-app toast signal the user instead [[sources/2026-04-21-notifications-grilling]].
+
+### Past-due behavior
+**Always fires immediately** [[sources/2026-04-24-reminder-due-bridge-grilling]]:
+
+- Save with a past `due` → fires now.
+- Reconciler finds a past fire time on launch → fires now.
+- No grace window, no "silent missed marker."
+
+> [!warning] Supersedes 30-min grace rule
+> The 30-min grace window and silent-missed marker from [[sources/2026-04-21-notifications-grilling]] decision 5 are **retired**. All past-due firings are immediate.
 
 ## Trigger effects
 
-Reminder firing can temporarily preempt Focus, but suppressed reminders do not create invalid focus events [[sources/2026-03-21-mvp-baseline]].
+Reminder firing can temporarily preempt Focus, but suppressed reminders do not create invalid focus events [[sources/2026-03-21-mvp-baseline]]:
 
-- If the target quest is already `completed` or `abandoned`, trigger is suppressed.
-- If the target quest is active, reminder trigger can preempt current Focus.
-- Reminder preemption is temporary; Focus returns to previous valid target after reminder quest resolves.
+- If the target quest is `completed` or `abandoned`, the bridge has already deleted the Reminder row — no trigger.
+- If active, reminder trigger can preempt current Focus.
+- Reminder preemption is temporary; Focus returns to previous valid target after the reminder's quest resolves.
 - Reminder-triggered focus writes a `trigger = reminder` event to [[FocusHistory]].
-- The INSERT is performed by the main Tauri process on engagement (launch or tap), not from any background OS-scheduler context, with `created_at` backdated to the original fire time [[sources/2026-04-21-notifications-grilling]]. See [[FocusHistory]] for the reconciliation model.
+- The INSERT is performed by the main Tauri process on engagement (launch or tap), with `created_at` backdated to the original fire time [[sources/2026-04-21-notifications-grilling]].
 - [[focus|Focus]] does **not** depend on OS notifications — a reminder can exist with a future fire time and no `focus_history` row [[sources/2026-04-21-notifications-grilling]].
 
 ## Snooze
 
-> [!warning] Superseded by [[sources/2026-04-21-notifications-grilling]] (2026-04-21)
-> Previously: snooze options 10m/30m/1h; snooze created a one-off `absolute` reminder for the current occurrence [[sources/2026-03-21-mvp-baseline]]. Updated view below.
-
-Snooze is **notification-level**, not reminder-level. Moves the OS surface without creating new entity rows [[sources/2026-04-21-notifications-grilling]].
+Snooze is **notification-level**, not reminder-level [[sources/2026-04-21-notifications-grilling]]:
 
 - Action-button presets on the notification: **Snooze 30m**, **Snooze 1d** (plus **Complete**).
 - OS reschedules a re-notification for the same reminder row.
-- **No new reminder row.**
-- **No [[FocusHistory]] event** at snooze time — a focus event is only written if the user engages after the eventual re-fire.
+- **No new reminder row.** **No [[FocusHistory]] event** at snooze time.
 - **No cross-device replication** — snooze is per-device.
-- Snooze does not alter repeat cadence or series schedule.
-
-Framing: "Reminder (date/time) is an entity that belongs to a quest. The notification is an OS-level surface. Snooze moves the surface, not the entity." [[sources/2026-04-21-notifications-grilling]]
+- Snooze does not alter `quest.due`, `quest.due_time`, or the series cadence.
 
 ## Permissions
 
-If notification permission is denied, reminder metadata remains editable and a subtle visible warning is shown in UI [[sources/2026-03-21-mvp-baseline]].
-
-Permission is requested **just-in-time on first reminder save** (rationale UI + system prompt), with a Settings toggle as a fallback entry point. Matches the pattern planned for mic permission (issue #10) [[sources/2026-04-21-notifications-grilling]].
+Permission is requested **just-in-time on first reminder save** (rationale UI + system prompt), with a Settings toggle as fallback [[sources/2026-04-21-notifications-grilling]]. If denied, the quest can still have a due date, but the notification will not deliver — a subtle UI warning is shown [[sources/2026-03-21-mvp-baseline]].
 
 ## Multi-device behavior
 
-Completion replicates and cancels peer notifications via [[SpaceSync]]; snooze is per-device only [[sources/2026-04-21-notifications-grilling]].
+Reminder rows are **local-only** — they do not replicate via [[SpaceSync]] [[sources/2026-04-24-reminder-due-bridge-grilling]]. The quest (with `due` + `due_time`) replicates; each device derives its own Reminder from the incoming quest fields:
 
-- Completion on device A → replicates via [[SpaceSync]] → device B cancels its pending/visible OS notification when the quest state arrives.
+- Device A sets `due` / `due_time` → **quest** replicates via [[SpaceSync]] → device B's ingress runs the bridge locally and creates its own Reminder row.
+- Completion on device A → quest status change replicates → device B's bridge deletes its local Reminder row and cancels the OS notification.
 - Snooze does not replicate; each device retains its own notification surface independently.
+- Under wall-clock semantics, each device fires the reminder at its own local wall-clock time (different absolute instants for devices in different zones).
+
+> [!warning] Supersedes Reminder replication
+> `src-tauri/src/services/space_sync/commands.rs` previously included `reminder` in the replicated entity set. That is **removed** under the bridge model — replicating the Reminder row would leak the origin device's timezone (via the cached `due_at_utc`) and duplicate a source of truth that already lives on the quest.
 
 ## Repeating quests
 
-Repeating-quest reminders live on the series and materialize per occurrence [[sources/2026-04-21-notifications-grilling]].
+Repeating-quest reminders use the **same bridge** as single quests — no separate series template mechanism [[sources/2026-04-24-reminder-due-bridge-grilling]]:
 
-- Reminder template is stored on the [[QuestSeries]] (not repeated on each occurrence).
-- `generate_next_occurrence` (`src-tauri/src/services/quest.rs:146-222`) creates the occurrence quest row AND inserts concrete `reminders` rows derived from the series template, resolving `mm_offset` against the occurrence's `due_at_utc`.
-- OS alarms are scheduled at the same time the occurrence is generated.
-- Schema impact: either a `reminder_templates` JSON column on `quest_series` or a new `series_reminder_templates` table — deferred to impl.
-- Single-occurrence (non-series) quests keep per-quest reminder semantics unchanged.
+- `generate_next_occurrence` (`src-tauri/src/services/quest.rs:146-222`) creates the occurrence quest row with its `due` set by the series schedule.
+- The bridge (inside `update_quest` or directly inside `generate_next_occurrence`) upserts the Reminder row for the new occurrence.
+- OS alarm scheduled at insert time.
+
+> [!warning] Supersedes series reminder templates
+> The `series_reminder_templates` table proposed in [[sources/2026-04-21-notifications-grilling]] decision 14 is **retired**. Occurrences derive their Reminder from their own `due` field via the standard bridge.
+
+## Deferred / open
+
+- **Notify X min before** (offset). Schema still has `kind` + `mm_offset` reserved, but unused by the bridge. Future work can reintroduce without schema change.
+- **Per-user default time** (09:00 override). Currently hardcoded 09:00 for date-only quests.
+- **Multiple reminders per quest.** Schema allows it, but the bridge manages exactly one row per quest. Future work can allow multiple via a dedicated UI.
