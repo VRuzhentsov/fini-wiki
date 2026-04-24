@@ -23,7 +23,8 @@ open are compatible with git and may be committed.
 ```
 ~/projects/fini-wiki/
 ├── AGENTS.md          # this schema (you are here)
-├── index.md           # content catalog (update on every ingest)
+├── _hot.md            # active context cache for agent-first lookup
+├── _index.md          # content catalog and navigation index
 ├── log.md             # chronological activity log (append-only)
 ├── raw/               # immutable source documents
 │   └── assets/        # images downloaded via Obsidian
@@ -39,7 +40,7 @@ Create additional subdirectories under `pages/` only when a category has
 ## Layers
 
 - **Raw** (`raw/`): read-only source of truth. Never modify.
-- **Wiki** (`pages/`, `index.md`, `log.md`): LLM-owned. Create, update,
+- **Wiki** (`pages/`, `_hot.md`, `_index.md`, `log.md`): LLM-owned. Create, update,
   refactor freely, but preserve cross-reference integrity.
 - **Schema** (this file): co-evolve with the user; update when workflows
   change.
@@ -82,22 +83,27 @@ User drops a file into `raw/` (or provides a URL/clipping) and asks to ingest.
 4. Touch related `entities/` and `concepts/` pages: create missing ones,
    update existing ones with new claims/contradictions. Prefer updating
    10–15 pages in one pass over a single monolithic page.
-5. Update `index.md` (add new pages, refresh summaries for changed pages).
-6. Append an entry to `log.md`.
-7. Report back: list of pages created/updated, flagged contradictions,
+5. Update `_index.md` (add new pages, refresh summaries for changed pages).
+6. Update `_hot.md` when the ingest changes active context, current architecture
+   facts, product semantics, or other high-signal facts agents should see first.
+7. Append an entry to `log.md`.
+8. Report back: list of pages created/updated, flagged contradictions,
    suggested follow-up questions.
 
 ### Query
 
 User asks a question against the wiki.
 
-1. Read `index.md` first to locate relevant pages.
-2. Drill into those pages; follow wikilinks as needed.
-3. Answer with citations to `[[sources/...]]` and `[[pages/...]]`.
-4. If the answer is substantive (comparison, analysis, new connection),
+1. Read `_hot.md` first for active context and current high-signal facts.
+2. Read `_index.md` second to locate relevant pages.
+3. Drill into those pages; follow wikilinks as needed.
+4. Use targeted search in `pages/**/*.md` if the right page is not obvious from
+   `_hot.md` or `_index.md`.
+5. Answer with citations to `[[sources/...]]` and `[[pages/...]]`.
+6. If the answer is substantive (comparison, analysis, new connection),
    offer to file it back into the wiki as a new page under the appropriate
    category and log it. Do not file automatically; ask first.
-5. If the wiki lacks evidence, say so explicitly rather than speculating.
+7. If the wiki lacks evidence, say so explicitly rather than speculating.
 
 ### Lint
 
@@ -112,7 +118,23 @@ On request, health-check the wiki.
 
 Produce a prioritized report; apply fixes only after user confirms scope.
 
-## index.md format
+## _hot.md format
+
+`_hot.md` is the first-read cache for active context. Keep it short enough that
+agents can read it at the start of any wiki-related task.
+
+Use it for:
+
+- Current architecture facts
+- Active product or business threads
+- Current terminology and domain semantics
+- Recently changed truths that agents are likely to get wrong
+- High-signal warnings or decision context
+
+Move stable navigation links into `_index.md`; move durable knowledge into
+`pages/**`.
+
+## _index.md format
 
 Content-oriented catalog. Grouped by category. Each entry: one line.
 
@@ -127,7 +149,7 @@ Content-oriented catalog. Grouped by category. Each entry: one line.
 - [[pages/sources/2026-04-10-article-slug]] — one-line hook
 ```
 
-Keep each line under ~150 chars. Update on every ingest.
+Keep each line under ~150 chars. Update `_index.md` on every ingest.
 
 ## log.md format
 
