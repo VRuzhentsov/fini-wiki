@@ -18,6 +18,8 @@ Updated: 2026-04-27
 - Multi-device E2E tests should share `ensureSyncedActors(...)` as the reusable precondition for paired, online, sync-ready `2+` actors.
 - Discovery architecture is now mDNS/DNS-SD (`_fini-sync._tcp.local.`) for endpoint discovery plus WebSocket for pairing/sync. mDNS TXT is untrusted metadata, not auth.
 - E2E CI should expose named Makefile-backed phases rather than one opaque `make pr-gate-e2e` GitHub Actions step.
+- PR CI is now a single `.github/workflows/ci.yml` workflow with required checks: `Snyk Vulnerability Scan`, `FE Unit Tests`, `BE Compile`, `BE Unit Tests`, `E2E Tests`.
+- Backend CI is split into Dockerfile-backed compile and unit-test gates so GHCR cache images can reuse compiled Rust test artifacts.
 
 ## Active Wiki Threads
 
@@ -29,7 +31,7 @@ Updated: 2026-04-27
 - [[e2e-testing]] — staged testing strategy plus new two-plus-actor container architecture.
 - [[CLI]] — desired primary synchronous automation surface with MCP parity and shared action-service contract.
 - [[DeviceConnection]] — now includes mDNS/DNS-SD discovery and WebSocket pairing direction.
-- [[github-actions-pipelines]] — includes split E2E CI phase guidance.
+- [[github-actions-pipelines]] — includes split E2E CI phase guidance plus backend compile/test cache split.
 
 ## Current Design Thread
 

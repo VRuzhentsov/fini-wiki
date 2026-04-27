@@ -3,13 +3,16 @@ title: GitHub Actions Pipelines
 type: concept
 created: 2026-04-12
 updated: 2026-04-27
-sources: [2026-04-12-fini-current-github-actions, 2026-03-23-release-gitops-setup, 2026-04-27-split-e2e-ci-workflow-steps]
+sources: [2026-04-12-fini-current-github-actions, 2026-03-23-release-gitops-setup, 2026-04-27-split-e2e-ci-workflow-steps, 2026-04-27-ci-quality-gates-cache-split]
 tags: [fini, github-actions, ci, release, pipeline, e2e]
 ---
 
 # GitHub Actions Pipelines
 
 Fini's current GitHub Actions setup is compact but strongly release-oriented. The implemented graph has three workflows: a reusable security check, a manual release-prep pipeline, and a tag-driven release pipeline [[sources/2026-04-12-fini-current-github-actions]].
+
+> [!warning] Updated PR workflow shape
+> Newer CI work adds a single PR-facing `.github/workflows/ci.yml` workflow and changes `security.yml` to `workflow_call` only for reuse by release workflows [[sources/2026-04-27-ci-quality-gates-cache-split]].
 
 ## Current topology
 
@@ -23,6 +26,30 @@ The first workflow is reusable infrastructure. The latter two are the main orche
 
 - `security.yml` runs Snyk after `npm ci` on pushes to `main/master/dev/prod`, on pull requests, and by `workflow_call` [[sources/2026-04-12-fini-current-github-actions]].
 - Both release pipelines call it as their first shared gate [[sources/2026-04-12-fini-current-github-actions]].
+
+After the CI quality-gate split, `security.yml` should be `workflow_call` only so Snyk remains reusable by release workflows without creating a second PR-facing workflow [[sources/2026-04-27-ci-quality-gates-cache-split]].
+
+## PR quality gates
+
+The current PR-facing workflow is `.github/workflows/ci.yml` [[sources/2026-04-27-ci-quality-gates-cache-split]]. Required `main` branch checks are:
+
+- `Snyk Vulnerability Scan`
+- `FE Unit Tests`
+- `BE Compile`
+- `BE Unit Tests`
+- `E2E Tests`
+
+GitHub Actions should remain thin: workflow jobs call Makefile targets, while Dockerfile stages define the test/runtime environment [[sources/2026-04-27-ci-quality-gates-cache-split]].
+
+## Backend compile/test cache split
+
+Backend validation is intentionally split for cache reuse [[sources/2026-04-27-ci-quality-gates-cache-split]].
+
+- `BE Compile` builds Rust test binaries with `cargo test --no-run` in Dockerfile stage `be-test-compile`.
+- `BE Unit Tests` builds from `be-test-compile` and runs `cargo test` in `be-unit-test`.
+- `pr-gate-be-cache-key` is computed from backend-relevant inputs such as `Dockerfile`, `src-tauri/Cargo.*`, Rust sources, migrations, capabilities, icons, and `tauri.conf.json`.
+- GHCR-backed cache images use backend input keys for cross-workflow reuse.
+- Release dry-run/tag quality gates call `make pr-gate-be-compile` and `make pr-gate-be-unit` instead of native Rust setup/cache in the backend quality-gate path.
 
 ## Manual prep pipeline
 
@@ -58,6 +85,8 @@ The E2E job should avoid hiding the entire multi-actor flow behind one opaque Gi
 This is a CI observability improvement. The current aggregate E2E flow was already green on PR #18, so the source frames this as debuggability rather than topology change [[sources/2026-04-27-split-e2e-ci-workflow-steps]].
 
 Open follow-ups: whether release dry-run/tag workflows should also move from Dockerfile `test` stage to split Makefile targets, and whether Playwright traces/test results should be uploaded as artifacts on E2E failure [[sources/2026-04-27-split-e2e-ci-workflow-steps]].
+
+Additional backend-cache follow-ups: whether `BE Compile` and `BE Unit Tests` should share one GHCR cache image long-term, and whether release artifact jobs should adopt the same Dockerfile/Makefile cache strategy or keep platform-native setup for bundle production [[sources/2026-04-27-ci-quality-gates-cache-split]].
 
 ## Relationship to older release docs
 

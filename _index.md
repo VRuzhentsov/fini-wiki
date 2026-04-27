@@ -32,8 +32,8 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/concepts/FocusHistory]] — owner-scoped event log; reminder-triggered rows are backdated by the main-process reconciler (4 sources)
 - [[pages/concepts/mcp-contract]] — MCP evolution from string-id migration to structured JSON outputs (3 sources)
 - [[pages/concepts/release-gitops]] — signed-tag GitHub Actions release pipeline with keyless cosign and GHCR publishing (2 sources)
-- [[pages/concepts/github-actions-pipelines]] — current workflow graph plus split Makefile-backed E2E CI phases (3 sources)
-- [[pages/concepts/e2e-testing]] — multi-actor E2E: headed local command, CI/headless command, synced-actor helper, split CI phases (5 sources)
+- [[pages/concepts/github-actions-pipelines]] — PR quality gates, release workflows, split E2E phases, backend compile/test cache split (4 sources)
+- [[pages/concepts/e2e-testing]] — multi-actor E2E: headed local command, CI/headless command, synced-actor helper, required E2E check (6 sources)
 - [[pages/concepts/os-notification]] — platform surface that delivers reminders; past-due now fires immediately and remains local per device (2 sources)
 - [[pages/concepts/Reminder]] — derived local reminder row managed from quest due fields; one row per due-dated active quest (4 sources)
 - [[pages/concepts/Quest]] — core actionable record; due fields now drive reminder scheduling through backend bridge logic (4 sources)
@@ -52,7 +52,7 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/e2e/skill/README]] — natural-language action translation contract with deterministic side effects
 
 ## Tooling
-- [[pages/tooling/github-actions]] — release workflow reference, tag policy, required secrets, and CI/release procedure (1 source)
+- [[pages/tooling/github-actions]] — PR required checks plus release workflow reference, tag policy, secrets, and procedure (2 sources)
 
 ## Sources
 - [[pages/sources/2026-04-12-fini-current-data-layer]] — direct inspection of current Rust backend storage stack: Diesel, schema, models, services, and migration tests
@@ -77,6 +77,7 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/sources/2026-04-26-mdns-sd-device-discovery-architecture]] — replaces custom UDP discovery/pairing with mDNS/DNS-SD discovery and WebSocket pairing/sync
 - [[pages/sources/2026-04-26-reusable-synced-devices-e2e-precondition]] — defines `ensureSyncedActors(...)` as reusable precondition for paired, sync-ready 2+ actors
 - [[pages/sources/2026-04-27-split-e2e-ci-workflow-steps]] — splits opaque E2E CI into named Makefile-backed phases for debuggability
+- [[pages/sources/2026-04-27-ci-quality-gates-cache-split]] — locks PR CI checks and splits backend compile/test gates for Docker/GHCR cache reuse
 
 ## Comparisons & Analyses
 - [[pages/concepts/device-sync-architecture]] — supersession chain from MVP.1 sync intent to archived `device_sync` to current split architecture (3 sources)

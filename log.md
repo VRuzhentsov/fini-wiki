@@ -116,3 +116,8 @@ Append-only chronological record. Parseable: `grep "^## \[" log.md | tail -10`.
 
 - Pages touched: [[pages/sources/2026-04-27-split-e2e-ci-workflow-steps]], [[pages/concepts/e2e-testing]], [[pages/concepts/github-actions-pipelines]], `_index.md`, `_hot.md`, `log.md`
 - Notes: Ingested the CI debuggability plan: keep aggregate `make pr-gate-e2e`, but expose Makefile-backed GitHub Actions phases for image build, network, actor startup, readiness, Playwright run, logs, and cleanup.
+
+## [2026-04-27] ingest | CI quality gates cache split
+
+- Pages touched: [[pages/sources/2026-04-27-ci-quality-gates-cache-split]], [[pages/concepts/github-actions-pipelines]], [[pages/concepts/e2e-testing]], [[pages/tooling/github-actions]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Ingested the PR CI quality-gate update. Captured the single PR-facing `CI` workflow, required branch-protection checks, workflow_call-only Snyk reuse, and Dockerfile/Makefile-backed backend compile/test split with GHCR cache images.

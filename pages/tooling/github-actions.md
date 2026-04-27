@@ -2,9 +2,9 @@
 title: GitHub Actions
 type: reference
 created: 2026-04-12
-updated: 2026-04-12
-sources: [2026-03-23-release-gitops-setup]
-tags: [tooling, ci, release]
+updated: 2026-04-27
+sources: [2026-03-23-release-gitops-setup, 2026-04-27-ci-quality-gates-cache-split]
+tags: [tooling, ci, release, github-actions]
 ---
 
 # GitHub Actions
@@ -13,8 +13,22 @@ Release automation for Fini. Two workflows, GitOps-driven by tag push.
 
 ## Workflows
 
+- `.github/workflows/ci.yml` — single PR-facing workflow for required quality gates.
+- `.github/workflows/security.yml` — `workflow_call` Snyk scan reused by release workflows.
 - `.github/workflows/release-dry-run.yml` — manual dispatch; signing-readiness + quality gates + optional full matrix.
 - `.github/workflows/release-tag.yml` — on tag push (`v*`); full gates + platform builds + atomic publish.
+
+## Required PR checks
+
+`main` branch protection currently requires [[sources/2026-04-27-ci-quality-gates-cache-split]]:
+
+- `Snyk Vulnerability Scan`
+- `FE Unit Tests`
+- `BE Compile`
+- `BE Unit Tests`
+- `E2E Tests`
+
+Backend compile and unit-test gates run through Dockerfile stages and Makefile targets so GHCR-backed cache images can reuse compiled test artifacts across similar source bases [[sources/2026-04-27-ci-quality-gates-cache-split]].
 
 Tag is the source of truth for release version. Tag workflow propagates the version into `package.json`, `package-lock.json`, `src-tauri/Cargo.toml`, `src-tauri/Cargo.lock`, `src-tauri/tauri.conf.json`. Do not pre-bump version files for normal releases.
 

@@ -3,7 +3,7 @@ title: E2E Testing
 type: concept
 created: 2026-04-12
 updated: 2026-04-27
-sources: [2026-03-22-e2e-testing-prd, 2026-04-26-two-plus-actor-e2e-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-04-27-split-e2e-ci-workflow-steps]
+sources: [2026-03-22-e2e-testing-prd, 2026-04-26-two-plus-actor-e2e-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-04-27-split-e2e-ci-workflow-steps, 2026-04-27-ci-quality-gates-cache-split]
 tags: [fini, testing, e2e, playwright, tauri-driver, mcp, docker, multi-device, ci]
 ---
 
@@ -84,6 +84,8 @@ The aggregate local Make target should remain, but GitHub Actions should expose 
 - Back it with smaller Makefile targets: build actor, build runner, create network, start actors, wait actors, run Playwright, print logs, cleanup.
 - In GitHub Actions, keep using `CONTAINER=docker`; locally, `CONTAINER ?= podman` remains the default.
 - This is a failure-debuggability improvement, not a change to the actor topology.
+
+E2E is one of the required PR checks under the single PR-facing `CI` workflow: `E2E Tests` must pass before merge to `main` [[sources/2026-04-27-ci-quality-gates-cache-split]].
 
 ## Prioritization
 
