@@ -2,8 +2,8 @@
 title: FocusHistory
 type: concept
 created: 2026-04-12
-updated: 2026-04-21
-sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling]
+updated: 2026-04-26
+sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling]
 tags: [fini, focus, history, sync]
 ---
 
@@ -72,7 +72,7 @@ Rows with `trigger = reminder` are written by a main-process reconciler on app e
   ```
 
 - `created_at` is the reminder's **original fire time**, not app-launch time. This preserves the newest-valid-wins resolver ordering across missed events.
-- Independent of the [[os-notification]] 30-minute grace window — reconciliation has **no grace window**; any past-fire reminder without a matching row gets one.
+- Independent of OS-notification delivery state; after [[sources/2026-04-24-reminder-due-bridge-grilling]], both notification delivery and reconciliation treat past-due reminders as immediate rather than grace-bounded.
 - [[focus|Focus]] does not depend on OS notifications; a reminder can exist with a future fire time and no `focus_history` row.
 
 Walkthrough:

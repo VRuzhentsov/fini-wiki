@@ -2,8 +2,8 @@
 title: Quest
 type: concept
 created: 2026-04-12
-updated: 2026-04-12
-sources: [2026-03-21-mvp-baseline, 2026-03-22-mcp-contract-baseline, 2026-04-12-fini-current-data-layer]
+updated: 2026-04-26
+sources: [2026-03-21-mvp-baseline, 2026-03-22-mcp-contract-baseline, 2026-04-12-fini-current-data-layer, 2026-04-24-reminder-due-bridge-grilling]
 tags: [fini, quest, focus, repeats, mcp, diesel]
 ---
 
@@ -29,7 +29,7 @@ The live backend confirms that this is not just a design target: Diesel models a
 | `energy` | enum | `medium` | Stored for post-MVP behavior; hidden in MVP UI |
 | `due` | date \| null | null | User-facing due date |
 | `due_time` | time \| null | null | Optional user-facing time |
-| `due_at_utc` | datetime \| null | null | Canonical UTC deadline used by reminders/overdue logic |
+| `due_at_utc` | datetime \| null | null | Stored UTC cache used by current implementation; under the reminder bridge, wall-clock due fields remain the source of truth for notification scheduling |
 | `repeat_rule` | RepeatRule \| null | null | Recurrence settings; see [[RepeatRule]] |
 | `order_rank` | float | `0` | Ordering rank in signed range `-100..100` (lower first) |
 | `completed_at` | datetime \| null | null | Set on completion |
@@ -79,11 +79,12 @@ If no active override exists:
 
 ## Due and overdue semantics
 
-Date-only due values are materialized to UTC end-of-day for computation and reminders [[sources/2026-03-21-mvp-baseline]].
+The newer reminder bridge keeps `due` and `due_time` as the user-facing source of truth and derives reminder behavior from them in the backend [[sources/2026-04-24-reminder-due-bridge-grilling]].
 
-- `due_at_utc` is canonical for computations
-- If user sets date-only due value, local end-of-day is materialized to UTC and stored in `due_at_utc`
-- Reminder and overdue checks use `due_at_utc`
+- If `due` and `due_time` are set, the quest should notify exactly at that local wall-clock time.
+- If `due` is set and `due_time` is null, the quest should notify at `09:00` local on that date.
+- Backend `update_quest` owns the reminder bridge: quest due/state changes upsert or delete the derived [[Reminder]] row.
+- The stored `due_at_utc` value is useful implementation data, but under the bridge it is not the authoritative scheduling source; UTC should be recomputed from local due fields when scheduling notifications.
 
 ## Restore
 

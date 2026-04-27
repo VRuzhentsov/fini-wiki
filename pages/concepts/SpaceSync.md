@@ -2,8 +2,8 @@
 title: SpaceSync
 type: concept
 created: 2026-04-12
-updated: 2026-04-21
-sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling]
+updated: 2026-04-26
+sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-04-26-mdns-sd-device-discovery-architecture]
 tags: [fini, sync, replication, spaces, websocket]
 ---
 
@@ -20,7 +20,6 @@ The current replicated domain is the mapped-space subset of the broader MVP.1 sy
   - spaces metadata
   - quests
   - quest series and occurrences
-  - reminders
   - focus history (owner-scoped, filtered by mapped spaces)
 
 ## Service boundary
@@ -58,13 +57,16 @@ The design keeps sync process-bound in this phase and relies on durable replay a
 
 ## Transport and session model
 
-Websocket is the only sync transport and uses one canonical session per pair [[sources/2026-03-29-device-synchronizations-design]].
+WebSocket remains the sync transport and uses one canonical session per pair, but the endpoint source moves from custom discovery beacons to DNS-SD resolution [[sources/2026-03-29-device-synchronizations-design]] [[sources/2026-04-26-mdns-sd-device-discovery-architecture]].
 
 - Data-plane uses websocket.
-- Peer endpoint uses fixed websocket port advertised by `device_connection` beacon.
+- Peer endpoint comes from the resolved `_fini-sync._tcp.local.` service for the paired device.
 - Exactly one canonical websocket session per pair:
   - deterministic dialer rule picks a single initiator (lower `device_id` dials)
 - Session requires pair-auth handshake before event exchange.
+
+> [!warning] Supersedes beacon-sourced endpoint
+> The earlier fixed websocket port advertised by custom `device_connection` beacons is replaced by DNS-SD service resolution. Sync still only trusts paired-device records; mDNS itself is not authorization.
 
 ## Replication model
 
@@ -144,13 +146,15 @@ Deletes use tombstones with 30-day retention to prevent resurrection on reconnec
 
 ## Reminder semantics
 
-Reminder metadata replicates, but each peer schedules and fires its own local OS notification [[sources/2026-03-29-device-synchronizations-design]] [[sources/2026-04-21-notifications-grilling]].
+Reminder rows are local-only derivations under the due-date bridge; the replicated source of truth is the quest's `due` / `due_time` state [[sources/2026-04-24-reminder-due-bridge-grilling]].
 
-- Reminder records replicate for mapped spaces.
-- Each mapped device schedules and fires its own local [[os-notification]].
-- **Peer cancellation**: when a quest's status arrives over sync as `completed` / `abandoned` (or the quest / reminder is deleted), the receiving peer cancels its own pending or visible OS notification for that reminder [[sources/2026-04-21-notifications-grilling]].
+- Quest rows with `due` / `due_time` replicate for mapped spaces.
+- Each mapped device derives its own local [[Reminder]] row from the incoming quest state and schedules its own local [[os-notification]].
+- **Peer cancellation**: when a quest's status arrives over sync as `completed` / `abandoned` (or the quest is deleted), the receiving peer deletes its local derived reminder and cancels its own pending or visible OS notification [[sources/2026-04-21-notifications-grilling]] [[sources/2026-04-24-reminder-due-bridge-grilling]].
 - **Snooze does not replicate**: snooze is notification-level and per-device; it does not emit a sync event and does not touch peers [[sources/2026-04-21-notifications-grilling]]. See [[os-notification#Snooze semantics]].
-- Repeating-quest reminders: the series holds the reminder template; the `generate_next_occurrence` flow materializes concrete `reminders` rows per occurrence, and those rows replicate like any other reminder [[sources/2026-04-21-notifications-grilling]]. See [[QuestSeries]] / [[QuestOccurrence]].
+
+> [!warning] Supersedes reminder-row replication
+> The older direction in [[sources/2026-04-21-notifications-grilling]] said reminder records replicate. [[sources/2026-04-24-reminder-due-bridge-grilling]] retires that: reminder rows are local-only because wall-clock scheduling is device-local and the quest row already carries the authoritative due fields.
 
 ## Focus semantics
 

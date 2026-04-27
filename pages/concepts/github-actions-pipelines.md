@@ -2,9 +2,9 @@
 title: GitHub Actions Pipelines
 type: concept
 created: 2026-04-12
-updated: 2026-04-12
-sources: [2026-04-12-fini-current-github-actions, 2026-03-23-release-gitops-setup]
-tags: [fini, github-actions, ci, release, pipeline]
+updated: 2026-04-27
+sources: [2026-04-12-fini-current-github-actions, 2026-03-23-release-gitops-setup, 2026-04-27-split-e2e-ci-workflow-steps]
+tags: [fini, github-actions, ci, release, pipeline, e2e]
 ---
 
 # GitHub Actions Pipelines
@@ -44,6 +44,20 @@ The first workflow is reusable infrastructure. The latter two are the main orche
 - Publish phase: stable or prerelease publication after all build jobs succeed.
 
 This means the pipeline is intentionally convergent: release publication is blocked on the full artifact set rather than allowing partial success [[sources/2026-04-12-fini-current-github-actions]].
+
+## E2E CI debuggability
+
+The E2E job should avoid hiding the entire multi-actor flow behind one opaque GitHub Actions step [[sources/2026-04-27-split-e2e-ci-workflow-steps]].
+
+- Keep aggregate `make pr-gate-e2e` for local reproduction and quick full runs.
+- Back the aggregate with smaller Makefile targets for build actor, build runner, network, start actors, wait actors, run, logs, and cleanup.
+- Split `.github/workflows/ci.yml` E2E job into named steps: Build E2E actor image, Build E2E runner image, Create E2E network, Start E2E actors, Wait for E2E actors, Run Playwright E2E suite, Print actor logs on failure, Cleanup E2E containers.
+- Keep orchestration in Makefile targets rather than duplicating long shell logic in YAML.
+- Use `CONTAINER=docker` in GitHub Actions and `CONTAINER ?= podman` locally.
+
+This is a CI observability improvement. The current aggregate E2E flow was already green on PR #18, so the source frames this as debuggability rather than topology change [[sources/2026-04-27-split-e2e-ci-workflow-steps]].
+
+Open follow-ups: whether release dry-run/tag workflows should also move from Dockerfile `test` stage to split Makefile targets, and whether Playwright traces/test results should be uploaded as artifacts on E2E failure [[sources/2026-04-27-split-e2e-ci-workflow-steps]].
 
 ## Relationship to older release docs
 

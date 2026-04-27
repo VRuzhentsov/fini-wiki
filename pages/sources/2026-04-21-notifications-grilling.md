@@ -51,3 +51,8 @@ The grilling locks a full lifecycle for [[Reminder]] delivery: OS-level per-plat
 - [[QuestSeries]] — reminder template location.
 - [[QuestOccurrence]] — materialized reminder rows at generation.
 - [[DeviceConnection]] — pairing + presence (referenced, not in scope).
+
+## Superseded by newer source
+
+> [!warning] Partly superseded by [[sources/2026-04-24-reminder-due-bridge-grilling]] (2026-04-24)
+> The newer bridge doc retires two decisions here: the 30-minute missed-fire grace window and the series-level reminder template direction. Keep this page for the broader OS-notification framing, snooze semantics, and reconciler ownership model.

@@ -2,8 +2,8 @@
 title: QuestSeries
 type: concept
 created: 2026-04-12
-updated: 2026-04-21
-sources: [2026-04-21-notifications-grilling]
+updated: 2026-04-26
+sources: [2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling]
 tags: [fini, quests, series, repeat, reminders]
 ---
 
@@ -32,11 +32,13 @@ Template record for repeating quests. A series defines cadence and generation ru
 - Only the closest not-yet-resolved occurrence is surfaced in active quest lists by default.
 - Historical occurrences remain visible in [[HistoryView]] and history endpoints.
 
-## Reminder templates
+## Reminder behavior
 
-Reminder configuration for repeating quests lives on the series, not on each occurrence [[sources/2026-04-21-notifications-grilling]].
+Repeating quests now use the same due-date bridge as single quests rather than a separate series-template system [[sources/2026-04-24-reminder-due-bridge-grilling]].
 
-- Users set a reminder template on the series once (e.g. "15 min before due").
-- `generate_next_occurrence` (`src-tauri/src/services/quest.rs:146-222`) materializes concrete [[Reminder]] rows per occurrence, resolving `mm_offset` against the occurrence's `due_at_utc`. [[os-notification]] alarms are scheduled at the same time.
-- Schema impact: either a `reminder_templates` JSON column on `quest_series` **or** a new `series_reminder_templates` table. Choice deferred to impl.
-- Single-occurrence (non-series) quests keep per-quest reminder semantics unchanged.
+- When `generate_next_occurrence` creates a new occurrence with a due date, the backend applies the normal quest reminder bridge to that occurrence.
+- No `series_reminder_templates` concept is needed in the current design.
+- Single-occurrence and repeating quests therefore share one reminder model: quest due fields are the source of truth; [[Reminder]] rows are derived.
+
+> [!warning] Supersedes series reminder templates
+> [[sources/2026-04-21-notifications-grilling]] proposed series-level reminder templates. [[sources/2026-04-24-reminder-due-bridge-grilling]] retires that direction.

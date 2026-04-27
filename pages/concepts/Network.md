@@ -2,9 +2,9 @@
 title: Network & Local Sync
 type: concept
 created: 2026-04-12
-updated: 2026-04-12
-sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design]
-tags: [fini, network, sync, websocket, udp]
+updated: 2026-04-27
+sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-26-mdns-sd-device-discovery-architecture]
+tags: [fini, network, sync, websocket, mdns, dns-sd]
 ---
 
 # Network & Local Sync
@@ -40,17 +40,25 @@ All entry points operate on the same local dataset.
 
 ## Transport split
 
-UDP and websocket responsibilities are now explicitly separated rather than loosely implied [[sources/2026-03-29-device-synchronizations-design]].
+The newer network direction separates discovery from trusted communication [[sources/2026-04-26-mdns-sd-device-discovery-architecture]].
 
-- Control-plane: UDP
-  - discovery
-  - presence heartbeat
-  - pairing handshake
-- Data-plane: websocket
-  - space synchronization events
-  - ACK/replay traffic
+- Discovery: DNS-SD over mDNS, browsing `_fini-sync._tcp.local.`.
+- Pairing: WebSocket messages to the resolved endpoint.
+- Sync data-plane: WebSocket sessions after paired/trusted-device checks.
+- Persistence: SQLite stores trusted devices and mapped sync state.
 
-Discovery beacons advertise fixed websocket port for `space_sync`.
+> [!warning] Supersedes custom UDP discovery/pairing
+> [[sources/2026-03-29-device-synchronizations-design]] used custom UDP discovery and pairing messages. [[sources/2026-04-26-mdns-sd-device-discovery-architecture]] replaces that with mDNS/DNS-SD discovery plus WebSocket pairing/sync.
+
+## Discovery semantics
+
+mDNS is discovery only [[sources/2026-04-26-mdns-sd-device-discovery-architecture]].
+
+- mDNS tells Fini where a device claims to be reachable.
+- TXT records are small, versioned, and untrusted.
+- Discovery does not authenticate the peer and does not authorize sync.
+- Pairing remains the trust-establishment step.
+- Sync auth must continue checking paired-device records before accepting replicated data.
 
 ## Pairing baseline
 
@@ -135,3 +143,4 @@ The current phase requires pairing and pair-auth, while encryption remains follo
 - Pair-auth is mandatory for websocket sync sessions.
 - Data-plane transport encryption is deferred to follow-up phase.
 - At-rest encryption is post-MVP work.
+- mDNS advertisements are never trust assertions; malicious or spoofed TXT records must not grant sync access [[sources/2026-04-26-mdns-sd-device-discovery-architecture]].

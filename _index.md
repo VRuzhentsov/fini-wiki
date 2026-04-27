@@ -27,15 +27,32 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/concepts/capability-based-security]] — general pattern that Tauri's permission model resembles (1 source, inferred)
 - [[pages/concepts/webview-desktop-apps]] — bundled-engine vs platform-WebView trade-offs in desktop web apps (1 source)
 - [[pages/concepts/focus]] — current replacement for `Main`; computed from quest state plus focus-history events (3 sources)
-- [[pages/concepts/DeviceConnection]] — pairing, discovery, and presence control-plane for multi-device Fini (2 sources)
-- [[pages/concepts/SpaceSync]] — mapped-space replication data-plane with replay, tombstones, and fan-out (3 sources)
-- [[pages/concepts/FocusHistory]] — owner-scoped event log; reminder rows written by main-process reconciler with backdated created_at (3 sources)
-- [[pages/concepts/Reminder]] — entity owned by a quest; snooze is now notification-level, delivery goes through [[os-notification]] (3 sources)
+- [[pages/concepts/DeviceConnection]] — pairing/discovery control plane; mDNS/DNS-SD discovery plus WebSocket pairing direction (4 sources)
+- [[pages/concepts/SpaceSync]] — mapped-space replication data-plane; websocket endpoint now comes from DNS-SD resolution (5 sources)
+- [[pages/concepts/FocusHistory]] — owner-scoped event log; reminder-triggered rows are backdated by the main-process reconciler (4 sources)
 - [[pages/concepts/mcp-contract]] — MCP evolution from string-id migration to structured JSON outputs (3 sources)
 - [[pages/concepts/release-gitops]] — signed-tag GitHub Actions release pipeline with keyless cosign and GHCR publishing (2 sources)
-- [[pages/concepts/github-actions-pipelines]] — current workflow graph with reusable security scan and Linux/Windows/Android release fan-out (2 sources)
-- [[pages/concepts/e2e-testing]] — staged test strategy with MCP contract lane first, browser smoke second, native smoke third (1 source)
-- [[pages/concepts/os-notification]] — platform surface that delivers reminders; scheduling, snooze, cancellation, content (1 source)
+- [[pages/concepts/github-actions-pipelines]] — current workflow graph plus split Makefile-backed E2E CI phases (3 sources)
+- [[pages/concepts/e2e-testing]] — multi-actor E2E: headed local command, CI/headless command, synced-actor helper, split CI phases (5 sources)
+- [[pages/concepts/os-notification]] — platform surface that delivers reminders; past-due now fires immediately and remains local per device (2 sources)
+- [[pages/concepts/Reminder]] — derived local reminder row managed from quest due fields; one row per due-dated active quest (4 sources)
+- [[pages/concepts/Quest]] — core actionable record; due fields now drive reminder scheduling through backend bridge logic (4 sources)
+- [[pages/concepts/QuestSeries]] — repeating template record; no separate series reminder template in current direction (2 sources)
+- [[pages/concepts/QuestOccurrence]] — generated actionable occurrence; reminders now derive through the same quest bridge (2 sources)
+- [[pages/concepts/CLI]] — desired primary synchronous interface with `--json`, stable exit codes, and MCP parity targets (0 raw sources)
+
+## E2E Specs
+- [[pages/e2e/README]] — QA execution policy: two-device topology, MCP-first interaction, state-first evidence, mandatory cleanup
+- [[pages/e2e/device-connection/pairing-happy-path]] — passcode pairing flow with device discovery, success visibility, and unpair cleanup
+- [[pages/e2e/space-sync/foo-create-via-dialog]] — remote custom-space mapping resolved by creating a local `Foo`
+- [[pages/e2e/space-sync/foo-bar-cross-map-via-dialog]] — cross-map two remote spaces onto opposite local spaces without duplicates
+- [[pages/e2e/space-sync/quest-sync-between-spaces]] — quest moves across mapped and unmapped spaces, then reappears after mapping enable
+- [[pages/e2e/cli/README]] — CLI-first E2E contract, preflight, evidence, and cleanup expectations
+- [[pages/e2e/interface/README]] — CLI/MCP parity expectations for one shared action service
+- [[pages/e2e/skill/README]] — natural-language action translation contract with deterministic side effects
+
+## Tooling
+- [[pages/tooling/github-actions]] — release workflow reference, tag policy, required secrets, and CI/release procedure (1 source)
 
 ## Sources
 - [[pages/sources/2026-04-12-fini-current-data-layer]] — direct inspection of current Rust backend storage stack: Diesel, schema, models, services, and migration tests
@@ -53,6 +70,13 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/sources/2026-03-28-quest-space-assignment]] — draft UI proposal for exposing quest space assignment and filtering
 - [[pages/sources/2026-03-29-device-synchronizations-design]] — implementation-ready lock for `device_connection`, `space_sync`, and `Focus`
 - [[pages/sources/2026-04-21-notifications-grilling]] — grilling locks OS notifications across Android/Linux/Windows/macOS; snooze is notification-level; focus_history reconciliation with backdated created_at
+- [[pages/sources/2026-04-24-reminder-due-bridge-grilling]] — locks quest due/date bridge to local reminders; supersedes grace window and series-template reminder design
+- [[pages/sources/2026-04-25-claude-design-spicy-sunrise-chat]] — Claude Design transcript for the spicy sunrise Fini UI/design-system handoff
+- [[pages/sources/2026-04-26-two-plus-actor-e2e-architecture]] — locks Playwright runner plus two-plus actor container architecture for multi-device E2E
+- [[pages/sources/2026-04-26-headed-local-e2e-main-use-case]] — locks `npm run test:e2e` as headed local two-window proof and `test:e2e:ci` as headless/containerized
+- [[pages/sources/2026-04-26-mdns-sd-device-discovery-architecture]] — replaces custom UDP discovery/pairing with mDNS/DNS-SD discovery and WebSocket pairing/sync
+- [[pages/sources/2026-04-26-reusable-synced-devices-e2e-precondition]] — defines `ensureSyncedActors(...)` as reusable precondition for paired, sync-ready 2+ actors
+- [[pages/sources/2026-04-27-split-e2e-ci-workflow-steps]] — splits opaque E2E CI into named Makefile-backed phases for debuggability
 
 ## Comparisons & Analyses
 - [[pages/concepts/device-sync-architecture]] — supersession chain from MVP.1 sync intent to archived `device_sync` to current split architecture (3 sources)

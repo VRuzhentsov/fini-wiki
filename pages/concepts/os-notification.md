@@ -2,8 +2,8 @@
 title: OS Notification
 type: concept
 created: 2026-04-21
-updated: 2026-04-21
-sources: [2026-04-21-notifications-grilling]
+updated: 2026-04-26
+sources: [2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling]
 tags: [fini, notifications, os, scheduling, android, linux, windows, macos]
 ---
 
@@ -38,13 +38,16 @@ Delivery survives reboots through a combination of OS-scheduler durability and a
 - Linux / Windows / macOS: persistence depends on the OS scheduler's own durability.
 - Re-arm on app launch is the cross-platform safety net.
 
-## Missed-fire grace window
+## Past-due behavior
 
-If a fire time has already passed, the notification may still fire late up to a bounded window [[sources/2026-04-21-notifications-grilling]].
+If a fire time has already passed, the notification fires immediately [[sources/2026-04-24-reminder-due-bridge-grilling]].
 
-- If fire time passed within the last **30 minutes** (device off, app killed, etc.): fire late.
-- Older than 30 minutes: skip the notification; surface in UI as a "missed reminders" marker.
-- Grace applies to the **OS notification only**. [[FocusHistory]] reconciliation is independent and has no grace window.
+- Save a quest with a past due time: fire now.
+- App launch reconciliation finds a missed fire: fire now.
+- No grace window, no silent miss state, no separate missed-marker UI.
+
+> [!warning] Supersedes 30-minute grace rule
+> The older 30-minute OS-notification grace window from [[sources/2026-04-21-notifications-grilling]] is retired by [[sources/2026-04-24-reminder-due-bridge-grilling]].
 
 ## Permission UX
 
@@ -74,10 +77,10 @@ Snooze is a notification-level operation, not a reminder-level one [[sources/202
 
 ## Multi-device cancellation
 
-Peer cancellation follows [[SpaceSync]] quest-state updates [[sources/2026-04-21-notifications-grilling]].
+Peer cancellation follows [[SpaceSync]] quest-state updates, but reminder rows themselves are local-only [[sources/2026-04-21-notifications-grilling]] [[sources/2026-04-24-reminder-due-bridge-grilling]].
 
-- Completion on device A → replicates via [[SpaceSync]] → device B cancels its pending/visible OS notification.
-- Applies to completed / abandoned / deleted quest states, and to reminder-row deletes.
+- Completion on device A → quest-state replicates via [[SpaceSync]] → device B cancels its pending/visible OS notification.
+- Applies to completed / abandoned / deleted quest states, and to local reminder-row deletes derived from those quest changes.
 - Snooze does not replicate; peers retain their own notification until their own state or action changes.
 
 ## Cancellation lifecycle
@@ -90,6 +93,14 @@ OS-scheduled fires and visible notifications are cancelled on state transitions 
 - Reminder time edits → reschedule in place (cancel old + schedule new).
 - Quest edits that do not affect reminder time do not cancel.
 - Incoming [[SpaceSync]] state changes cancel peer notifications.
+
+## Wall-clock semantics
+
+Fire time follows quest-local wall-clock semantics rather than a frozen UTC instant [[sources/2026-04-24-reminder-due-bridge-grilling]].
+
+- `Apr 30, 10:00` means 10:00 local on the current device.
+- Date-only quests fire at `09:00` local by default.
+- DST and timezone changes preserve local wall-clock meaning; UTC is recomputed from the quest fields when scheduling.
 
 ## Content
 
@@ -121,9 +132,8 @@ The notification does not write [[FocusHistory]] directly [[sources/2026-04-21-n
 
 ## Open questions
 
-Source flags these as TBD, not blocking the grilling close [[sources/2026-04-21-notifications-grilling]].
+Remaining TBDs after the bridge update [[sources/2026-04-21-notifications-grilling]] [[sources/2026-04-24-reminder-due-bridge-grilling]].
 
 - Linux delivery mechanism choice.
 - Vibration defaults.
 - Notification grouping: one per reminder vs grouped by quest/space.
-- Past-time reminder creation: fire immediately, refuse, or treat as missed under the grace rule.

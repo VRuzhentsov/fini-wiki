@@ -76,3 +76,43 @@ Append-only chronological record. Parseable: `grep "^## \[" log.md | tail -10`.
 
 - Pages touched: `AGENTS.md`, `_index.md`, `_hot.md`, `.gitignore`, `log.md`
 - Notes: Renamed the wiki catalog from `index.md` to `_index.md`, allowed `_hot.md` and `_index.md` through the ignore rules, and updated the schema so agents read `_hot.md` first, `_index.md` second, then targeted `pages/**` files.
+
+## [2026-04-25] ingest | Claude Design spicy sunrise transcript
+
+- Pages touched: [[pages/sources/2026-04-25-claude-design-spicy-sunrise-chat]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Preserved the Claude Design handoff transcript as a raw wiki source and captured locked implementation intent for the Vue UI refresh.
+
+## [2026-04-26] ingest | Reminder bridge and two-plus-actor E2E architecture
+
+- Pages touched: [[pages/sources/2026-04-24-reminder-due-bridge-grilling]], [[pages/sources/2026-04-26-two-plus-actor-e2e-architecture]], [[pages/concepts/os-notification]], [[pages/concepts/SpaceSync]], [[pages/concepts/Quest]], [[pages/concepts/QuestSeries]], [[pages/concepts/QuestOccurrence]], [[pages/concepts/FocusHistory]], [[pages/concepts/e2e-testing]], [[pages/sources/2026-04-21-notifications-grilling]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Ingested the locked due-date-to-reminder bridge and the new multi-actor E2E architecture. Resolved stale wiki claims by marking the 30-minute reminder grace window and series-level reminder templates as superseded; captured the new local-only reminder derivation model and the Playwright runner plus actor-container testing direction.
+
+## [2026-04-26] refactor | Fold E2E spec docs into testing concept and index
+
+- Pages touched: [[pages/concepts/e2e-testing]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Synthesized the existing `pages/e2e/**` scenario docs into the main testing concept. Captured the active QA execution policy: two-device topology, MCP-first interaction, state-first evidence, and mandatory cleanup with baseline restoration.
+
+## [2026-04-26] lint | Catalog gaps and reminder supersession check
+
+- Pages touched: `_index.md`, `_hot.md`, `log.md`
+- Notes: Verified the reminder bridge supersession chain and reran orphan detection with path-aware wikilinks. Straightforward catalog fixes: added index entries for `[[pages/concepts/CLI]]` and `[[pages/tooling/github-actions]]`; broader lint findings left for follow-up review.
+
+## [2026-04-27] ingest | Headed local E2E main use case
+
+- Pages touched: [[pages/sources/2026-04-26-headed-local-e2e-main-use-case]], [[pages/concepts/e2e-testing]], [[pages/concepts/DeviceConnection]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Ingested the command split: `npm run test:e2e` is the visible local two-window proof, while `npm run test:e2e:ci` remains containerized/headless under Xvfb. Captured actor isolation, stable hostnames, Playwright sockets, and Settings/Add Device selector needs.
+
+## [2026-04-27] ingest | mDNS-SD device discovery architecture
+
+- Pages touched: [[pages/sources/2026-04-26-mdns-sd-device-discovery-architecture]], [[pages/concepts/DeviceConnection]], [[pages/concepts/Network]], [[pages/concepts/SpaceSync]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Ingested the discovery migration from custom UDP to DNS-SD over mDNS using `mdns-sd` behind a provider abstraction. Key lock: mDNS is endpoint discovery only; pairing and sync move to WebSocket and still require trusted paired-device state.
+
+## [2026-04-27] ingest | Reusable synced actors E2E precondition
+
+- Pages touched: [[pages/sources/2026-04-26-reusable-synced-devices-e2e-precondition]], [[pages/concepts/e2e-testing]], [[pages/concepts/DeviceConnection]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Ingested `ensureSyncedActors(...)` as the reusable Playwright precondition for paired, online, sync-ready 2+ actor tests. Captured hybrid UI-pairing plus backend-readiness strategy and full-mesh initial topology.
+
+## [2026-04-27] ingest | Split E2E CI workflow steps
+
+- Pages touched: [[pages/sources/2026-04-27-split-e2e-ci-workflow-steps]], [[pages/concepts/e2e-testing]], [[pages/concepts/github-actions-pipelines]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Ingested the CI debuggability plan: keep aggregate `make pr-gate-e2e`, but expose Makefile-backed GitHub Actions phases for image build, network, actor startup, readiness, Playwright run, logs, and cleanup.

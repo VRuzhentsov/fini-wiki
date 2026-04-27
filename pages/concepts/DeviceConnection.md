@@ -2,9 +2,9 @@
 title: DeviceConnection
 type: concept
 created: 2026-04-12
-updated: 2026-04-12
-sources: [2026-03-29-device-synchronizations-design]
-tags: [fini, sync, pairing, discovery, device-connection]
+updated: 2026-04-27
+sources: [2026-03-29-device-synchronizations-design, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition]
+tags: [fini, sync, pairing, discovery, device-connection, mdns, dns-sd]
 ---
 
 # DeviceConnection
@@ -72,6 +72,20 @@ Presence remains part of the control-plane and not the replication data-plane [[
 - Offline threshold: 2 missed heartbeats (120s).
 - `last_seen_at` is derived from latest heartbeat/discovery packet.
 
+> [!warning] Discovery transport superseded
+> The older custom UDP discovery/pairing transport from [[sources/2026-03-29-device-synchronizations-design]] is superseded by the mDNS/DNS-SD architecture in [[sources/2026-04-26-mdns-sd-device-discovery-architecture]]. Keep the identity, add-mode, pairing UX, and trust model; change how peers are discovered and contacted.
+
+## mDNS/DNS-SD discovery
+
+Device discovery should use DNS-SD over mDNS for endpoint discovery, not custom UDP beacons [[sources/2026-04-26-mdns-sd-device-discovery-architecture]].
+
+- Service type: `_fini-sync._tcp.local.`.
+- First desktop provider: Rust `mdns-sd` crate behind a Fini-owned `DiscoveryProvider` abstraction.
+- TXT V1 fields: `txtvers`, `devid`, `name`, `add`, `proto`.
+- TXT records are untrusted LAN claims; they do not establish identity trust.
+- Resolved peers are keyed by stable `device_id`, not display name or mDNS instance name.
+- Add Device filters peers where `add=1`, `device_id != local_device_id`, and `proto` is supported.
+
 ## Add-device mode
 
 Add-device mode is the only state where new pairing requests are accepted [[sources/2026-03-29-device-synchronizations-design]].
@@ -100,13 +114,26 @@ Pairing is explicit and survives restart until unpair [[sources/2026-03-29-devic
 - Pending request timeout: 60s.
 - Pairing survives restart until unpair.
 
+Under the mDNS architecture, peer-specific pairing messages move from UDP to the resolved WebSocket endpoint [[sources/2026-04-26-mdns-sd-device-discovery-architecture]]. The passcode trust ceremony stays: mDNS says where a peer claims to be, pairing decides whether the user trusts it, and WebSocket auth later proves trusted-device possession.
+
+## E2E pairing precondition
+
+The reusable multi-actor E2E helper should use real UI pairing for coverage, then backend commands for readiness checks [[sources/2026-04-26-reusable-synced-devices-e2e-precondition]].
+
+- `ensureSyncedActors([actorA, actorB])` prepares actors for business tests.
+- It verifies stable local identities and unique device ids.
+- It ensures each actor is paired with each other actor.
+- For `2+` actors, the initial default topology is full mesh.
+- The local headed proof launches visible `actor-a` / `actor-b` windows and exercises the real Settings/Add Device flow [[sources/2026-04-26-headed-local-e2e-main-use-case]].
+
 ## Transport scope
 
-The transport split is a core lock: UDP for control-plane only, websocket for sync data-plane only [[sources/2026-03-29-device-synchronizations-design]].
+The newer transport split is mDNS/DNS-SD for discovery and WebSocket for peer-specific pairing plus sync [[sources/2026-04-26-mdns-sd-device-discovery-architecture]].
 
-- UDP is used for connection control-plane only (discovery/presence/pairing).
-- Discovery beacon advertises fixed `space_sync` websocket port for data-plane.
-- UDP payload changes do not carry replicated quest/space/reminder/focus domain data.
+- mDNS/DNS-SD browse/resolve finds `_fini-sync._tcp.local.` endpoints.
+- Pairing messages use the resolved WebSocket endpoint.
+- Sync continues over WebSocket and still requires paired/trusted device records.
+- Temporary port sharding (`FINI_DISCOVERY_PEER_PORTS`) should go away after mDNS endpoint resolution works.
 
 ## Security policy (connection layer)
 
