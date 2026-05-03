@@ -2,8 +2,8 @@
 title: SpaceSync
 type: concept
 created: 2026-04-12
-updated: 2026-04-26
-sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-04-26-mdns-sd-device-discovery-architecture]
+updated: 2026-05-02
+sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-05-02-device-settings-last-synced-date-time]
 tags: [fini, sync, replication, spaces, websocket]
 ---
 
@@ -46,6 +46,14 @@ Enabling mapping is not future-only; it immediately syncs existing records too [
 - When a mapping is enabled for a space, run immediate bootstrap sync.
 - Bootstrap includes existing records for that space, not future-only changes.
 - If mapped space does not exist on peer, auto-create it with the same `space_id`.
+
+## Mapped-space status visibility
+
+The settings device-detail UI surfaces sync recency per mapped space without changing replication semantics [[sources/2026-05-02-device-settings-last-synced-date-time]].
+
+- Mapped-space rows show a spinner while sync is pending.
+- Once no sync is pending and a last-synced timestamp exists, rows show `last synced:` with locale date+time.
+- This label is presentation-only; `space_sync` storage and event flow remain unchanged.
 
 ## Runtime lifecycle
 

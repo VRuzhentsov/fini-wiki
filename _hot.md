@@ -1,6 +1,6 @@
 # Hot Cache
 
-Updated: 2026-04-27
+Updated: 2026-05-02
 
 ## Current Fini Architecture
 
@@ -20,6 +20,7 @@ Updated: 2026-04-27
 - E2E CI should expose named Makefile-backed phases rather than one opaque `make pr-gate-e2e` GitHub Actions step.
 - PR CI is now a single `.github/workflows/ci.yml` workflow with required checks: `Snyk Vulnerability Scan`, `FE Unit Tests`, `BE Compile`, `BE Unit Tests`, `E2E Tests`.
 - Backend CI is split into Dockerfile-backed compile and unit-test gates so GHCR cache images can reuse compiled Rust test artifacts.
+- Settings device detail mapped-space rows now show `last synced:` as locale date+time instead of time-only; this is UI-only and does not change `space_sync` semantics.
 
 ## Active Wiki Threads
 

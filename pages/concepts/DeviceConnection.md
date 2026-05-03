@@ -2,8 +2,8 @@
 title: DeviceConnection
 type: concept
 created: 2026-04-12
-updated: 2026-04-27
-sources: [2026-03-29-device-synchronizations-design, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition]
+updated: 2026-05-02
+sources: [2026-03-29-device-synchronizations-design, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-05-02-device-settings-last-synced-date-time]
 tags: [fini, sync, pairing, discovery, device-connection, mdns, dns-sd]
 ---
 
@@ -40,6 +40,7 @@ Devices section behavior:
 - Show paired devices only.
 - Device row opens `/settings/device/:id`.
 - `Add device` row is always last and opens `/settings/add-device`.
+- Device detail mapped-space rows show `last synced:` as locale date+time when the space is mapped and no sync is pending [[sources/2026-05-02-device-settings-last-synced-date-time]].
 
 ## Device identity and local record
 

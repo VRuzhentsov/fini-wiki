@@ -27,8 +27,8 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/concepts/capability-based-security]] — general pattern that Tauri's permission model resembles (1 source, inferred)
 - [[pages/concepts/webview-desktop-apps]] — bundled-engine vs platform-WebView trade-offs in desktop web apps (1 source)
 - [[pages/concepts/focus]] — current replacement for `Main`; computed from quest state plus focus-history events (3 sources)
-- [[pages/concepts/DeviceConnection]] — pairing/discovery control plane; mDNS/DNS-SD discovery plus WebSocket pairing direction (4 sources)
-- [[pages/concepts/SpaceSync]] — mapped-space replication data-plane; websocket endpoint now comes from DNS-SD resolution (5 sources)
+- [[pages/concepts/DeviceConnection]] — pairing/discovery control plane; mDNS/DNS-SD discovery plus WebSocket pairing direction (5 sources)
+- [[pages/concepts/SpaceSync]] — mapped-space replication data-plane; websocket endpoint now comes from DNS-SD resolution (6 sources)
 - [[pages/concepts/FocusHistory]] — owner-scoped event log; reminder-triggered rows are backdated by the main-process reconciler (4 sources)
 - [[pages/concepts/mcp-contract]] — MCP evolution from string-id migration to structured JSON outputs (3 sources)
 - [[pages/concepts/release-gitops]] — signed-tag GitHub Actions release pipeline with keyless cosign and GHCR publishing (2 sources)
@@ -78,6 +78,7 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/sources/2026-04-26-reusable-synced-devices-e2e-precondition]] — defines `ensureSyncedActors(...)` as reusable precondition for paired, sync-ready 2+ actors
 - [[pages/sources/2026-04-27-split-e2e-ci-workflow-steps]] — splits opaque E2E CI into named Makefile-backed phases for debuggability
 - [[pages/sources/2026-04-27-ci-quality-gates-cache-split]] — locks PR CI checks and splits backend compile/test gates for Docker/GHCR cache reuse
+- [[pages/sources/2026-05-02-device-settings-last-synced-date-time]] — Settings device detail now shows mapped-space last synced as locale date+time
 
 ## Comparisons & Analyses
 - [[pages/concepts/device-sync-architecture]] — supersession chain from MVP.1 sync intent to archived `device_sync` to current split architecture (3 sources)

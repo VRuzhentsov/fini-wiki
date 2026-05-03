@@ -121,3 +121,8 @@ Append-only chronological record. Parseable: `grep "^## \[" log.md | tail -10`.
 
 - Pages touched: [[pages/sources/2026-04-27-ci-quality-gates-cache-split]], [[pages/concepts/github-actions-pipelines]], [[pages/concepts/e2e-testing]], [[pages/tooling/github-actions]], `_index.md`, `_hot.md`, `log.md`
 - Notes: Ingested the PR CI quality-gate update. Captured the single PR-facing `CI` workflow, required branch-protection checks, workflow_call-only Snyk reuse, and Dockerfile/Makefile-backed backend compile/test split with GHCR cache images.
+
+## [2026-05-02] ingest | Device settings last synced date and time
+
+- Pages touched: [[pages/sources/2026-05-02-device-settings-last-synced-date-time]], [[pages/concepts/DeviceConnection]], [[pages/concepts/SpaceSync]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Ingested shipped UI-only Settings change from commit `f2e98ab`: mapped-space `last synced:` labels now use locale date+time instead of time-only, with targeted `DeviceView` unit coverage.
