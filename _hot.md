@@ -1,6 +1,6 @@
 # Hot Cache
 
-Updated: 2026-05-02
+Updated: 2026-05-03
 
 ## Current Fini Architecture
 
@@ -21,6 +21,11 @@ Updated: 2026-05-02
 - PR CI is now a single `.github/workflows/ci.yml` workflow with required checks: `Snyk Vulnerability Scan`, `FE Unit Tests`, `BE Compile`, `BE Unit Tests`, `E2E Tests`.
 - Backend CI is split into Dockerfile-backed compile and unit-test gates so GHCR cache images can reuse compiled Rust test artifacts.
 - Settings device detail mapped-space rows now show `last synced:` as locale date+time instead of time-only; this is UI-only and does not change `space_sync` semantics.
+- Settings rows now use `SettingsListGroup` and `SettingsListItem`; row content is one-column or start/end two-column, with fixed leading/trailing chrome outside the content columns.
+- Settings styling stays DaisyUI/Tailwind token-first. Vue templates should not branch on light/dark/system for styling; global `data-theme` and tokens own theme differences.
+- Device display names are labels, not identity. UUIDs remain hidden route/storage identity; duplicate display names are allowed.
+- Local device identity now lives in SQLite `settings` rows `device.id` and `device.name`; deprecated `device_identity.json` is migration input only and should be deleted after settings identity is valid.
+- Paired-device `display_name` is captured at pairing time and does not auto-update from later discovery names.
 
 ## Active Wiki Threads
 
@@ -33,6 +38,7 @@ Updated: 2026-05-02
 - [[CLI]] — desired primary synchronous automation surface with MCP parity and shared action-service contract.
 - [[DeviceConnection]] — now includes mDNS/DNS-SD discovery and WebSocket pairing direction.
 - [[github-actions-pipelines]] — includes split E2E CI phase guidance plus backend compile/test cache split.
+- [[settings-ui]] — locked Settings row primitive/layout rules and token-first styling constraints.
 
 ## Current Design Thread
 

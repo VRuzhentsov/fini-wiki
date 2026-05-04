@@ -2,9 +2,9 @@
 title: DeviceConnection
 type: concept
 created: 2026-04-12
-updated: 2026-05-02
-sources: [2026-03-29-device-synchronizations-design, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-05-02-device-settings-last-synced-date-time]
-tags: [fini, sync, pairing, discovery, device-connection, mdns, dns-sd]
+updated: 2026-05-03
+sources: [2026-03-29-device-synchronizations-design, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-05-02-device-settings-last-synced-date-time, 2026-05-03-settings-list-device-identity-grilling]
+tags: [fini, sync, pairing, discovery, device-connection, mdns, dns-sd, settings]
 ---
 
 # DeviceConnection
@@ -41,15 +41,24 @@ Devices section behavior:
 - Device row opens `/settings/device/:id`.
 - `Add device` row is always last and opens `/settings/add-device`.
 - Device detail mapped-space rows show `last synced:` as locale date+time when the space is mapped and no sync is pending [[sources/2026-05-02-device-settings-last-synced-date-time]].
+- Settings device rows use the shared [[settings-ui]] row primitives, show display name plus `Online` or `Offline`, and hide UUID/hash values in normal rows [[sources/2026-05-03-settings-list-device-identity-grilling]].
 
 ## Device identity and local record
 
-These fields describe the minimum pairing and presence identity required by the current design [[sources/2026-03-29-device-synchronizations-design]].
+These fields describe the minimum pairing and presence identity required by the current design [[sources/2026-03-29-device-synchronizations-design]]. Newer Settings identity work tightens the distinction between user-facing labels and route/storage identity [[sources/2026-05-03-settings-list-device-identity-grilling]].
 
 Minimum identity fields:
 
 - `device_id` (UUID, immutable)
 - `hostname`
+
+Current local identity storage:
+
+- `device.id` in the SQLite `settings` table stores the local UUID used for route/storage identity [[sources/2026-05-03-settings-list-device-identity-grilling]].
+- `device.name` in the SQLite `settings` table stores the local display label, refreshed from `HOSTNAME` or `COMPUTERNAME` with fallback [[sources/2026-05-03-settings-list-device-identity-grilling]].
+- No combined JSON/blob identity value is stored in settings [[sources/2026-05-03-settings-list-device-identity-grilling]].
+- Deprecated `device_identity.json` is migration input only. If settings lacks `device.id`, import only the legacy JSON `device_id`, set `device.name` from the current environment-derived name, then delete the JSON file after settings identity is valid [[sources/2026-05-03-settings-list-device-identity-grilling]].
+- If settings already has `device.id`, settings wins and stale `device_identity.json` is deleted without import [[sources/2026-05-03-settings-list-device-identity-grilling]].
 
 Minimum paired-device record fields:
 
@@ -62,7 +71,22 @@ Minimum paired-device record fields:
 Display identity:
 
 - Primary label: `display_name`
-- Disambiguation: short UUID suffix
+- Device display names are labels, not identity; duplicate display names are allowed [[sources/2026-05-03-settings-list-device-identity-grilling]].
+- Normal Settings rows hide UUID/hash values, while UUID remains primary key and route/storage identity [[sources/2026-05-03-settings-list-device-identity-grilling]].
+- Saved paired-device `display_name` is captured at pairing time and does not auto-update from later discovery names [[sources/2026-05-03-settings-list-device-identity-grilling]].
+
+> [!warning] Superseded by [[sources/2026-05-03-settings-list-device-identity-grilling]] (2026-05-03)
+> The older Settings display direction used a short UUID suffix for disambiguation. Normal Settings rows now hide UUID/hash values; duplicate display names are allowed.
+
+## Implementation companion docs
+
+These repo docs are companion references for code-level implementation context, not raw source citations:
+
+- `../fini/specs/device-connect/README.md`
+- `../fini/src/views/SettingsView.md`
+- `../fini/src/views/DeviceView.md`
+- `../fini/src/components/SettingsView/SettingsListItem.md`
+- `../fini/src/components/SettingsView/SettingsListGroup.md`
 
 ## Presence model
 

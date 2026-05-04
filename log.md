@@ -126,3 +126,8 @@ Append-only chronological record. Parseable: `grep "^## \[" log.md | tail -10`.
 
 - Pages touched: [[pages/sources/2026-05-02-device-settings-last-synced-date-time]], [[pages/concepts/DeviceConnection]], [[pages/concepts/SpaceSync]], `_index.md`, `_hot.md`, `log.md`
 - Notes: Ingested shipped UI-only Settings change from commit `f2e98ab`: mapped-space `last synced:` labels now use locale date+time instead of time-only, with targeted `DeviceView` unit coverage.
+
+## [2026-05-03] ingest | Settings list and device identity grilling
+
+- Pages touched: [[pages/sources/2026-05-03-settings-list-device-identity-grilling]], [[pages/concepts/DeviceConnection]], [[pages/concepts/settings-ui]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Ingested Settings row primitive/layout rules and device identity semantics. Captured token-first styling, hidden UUID/hash display in Settings rows, SQLite `settings` local identity, deprecated `device_identity.json` migration/deletion behavior, and pairing-time paired-device labels.
