@@ -27,13 +27,13 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/concepts/capability-based-security]] — general pattern that Tauri's permission model resembles (1 source, inferred)
 - [[pages/concepts/webview-desktop-apps]] — bundled-engine vs platform-WebView trade-offs in desktop web apps (1 source)
 - [[pages/concepts/focus]] — current replacement for `Main`; computed from quest state plus focus-history events (3 sources)
-- [[pages/concepts/DeviceConnection]] — pairing/discovery control plane; UUID identity hidden from Settings display labels (6 sources)
-- [[pages/concepts/SpaceSync]] — mapped-space replication data-plane; websocket endpoint now comes from DNS-SD resolution (6 sources)
+- [[pages/concepts/DeviceConnection]] — pairing/discovery control plane; inline pairing consent distinct from SpaceSync consent (8 sources)
+- [[pages/concepts/SpaceSync]] — one-space receiver-side consent lifecycle with end/re-enable semantics for mapped spaces (8 sources)
 - [[pages/concepts/FocusHistory]] — owner-scoped event log; reminder-triggered rows are backdated by the main-process reconciler (4 sources)
 - [[pages/concepts/mcp-contract]] — MCP evolution from string-id migration to structured JSON outputs (3 sources)
 - [[pages/concepts/release-gitops]] — signed-tag GitHub Actions release pipeline with keyless cosign and GHCR publishing (2 sources)
 - [[pages/concepts/github-actions-pipelines]] — PR quality gates, release workflows, split E2E phases, backend compile/test cache split (4 sources)
-- [[pages/concepts/e2e-testing]] — multi-actor E2E: headed local command, CI/headless command, synced-actor helper, required E2E check (6 sources)
+- [[pages/concepts/e2e-testing]] — multi-actor E2E plus headed proof of one-space sync lifecycle; final local run passed 7 tests (8 sources)
 - [[pages/concepts/os-notification]] — platform surface that delivers reminders; past-due now fires immediately and remains local per device (2 sources)
 - [[pages/concepts/Reminder]] — derived local reminder row managed from quest due fields; one row per due-dated active quest (4 sources)
 - [[pages/concepts/Quest]] — core actionable record; due fields now drive reminder scheduling through backend bridge logic (4 sources)
@@ -45,9 +45,9 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 ## E2E Specs
 - [[pages/e2e/README]] — QA execution policy: two-device topology, MCP-first interaction, state-first evidence, mandatory cleanup
 - [[pages/e2e/device-connection/pairing-happy-path]] — passcode pairing flow with device discovery, success visibility, and unpair cleanup
-- [[pages/e2e/space-sync/foo-create-via-dialog]] — remote custom-space mapping resolved by creating a local `Foo`
-- [[pages/e2e/space-sync/foo-bar-cross-map-via-dialog]] — cross-map two remote spaces onto opposite local spaces without duplicates
-- [[pages/e2e/space-sync/quest-sync-between-spaces]] — quest moves across mapped and unmapped spaces, then reappears after mapping enable
+- [[pages/e2e/space-sync/foo-create-via-dialog]] — one-space receiver-side request for remote custom space `Foo`
+- [[pages/e2e/space-sync/foo-bar-cross-map-via-dialog]] — historical batch/cross-map dialog intent; superseded by sequential one-space requests
+- [[pages/e2e/space-sync/quest-sync-between-spaces]] — quest sync across mapping end/re-enable lifecycle with UUID merge
 - [[pages/e2e/cli/README]] — CLI-first E2E contract, preflight, evidence, and cleanup expectations
 - [[pages/e2e/interface/README]] — CLI/MCP parity expectations for one shared action service
 - [[pages/e2e/skill/README]] — natural-language action translation contract with deterministic side effects
@@ -81,6 +81,8 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/sources/2026-04-27-ci-quality-gates-cache-split]] — locks PR CI checks and splits backend compile/test gates for Docker/GHCR cache reuse
 - [[pages/sources/2026-05-02-device-settings-last-synced-date-time]] — Settings device detail now shows mapped-space last synced as locale date+time
 - [[pages/sources/2026-05-03-settings-list-device-identity-grilling]] — locks Settings row primitives and separates device labels from UUID identity
+- [[pages/sources/2026-05-04-space-sync-consent-and-lifecycle]] — locks one-space receiver-side SpaceSync consent and end/re-enable lifecycle semantics
+- [[pages/sources/2026-05-04-space-sync-implementation-and-e2e-results]] — records implementation details and `make e2e-headed` passing 7 actor tests
 
 ## Comparisons & Analyses
 - [[pages/concepts/device-sync-architecture]] — supersession chain from MVP.1 sync intent to archived `device_sync` to current split architecture (3 sources)

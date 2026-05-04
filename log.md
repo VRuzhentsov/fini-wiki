@@ -131,3 +131,8 @@ Append-only chronological record. Parseable: `grep "^## \[" log.md | tail -10`.
 
 - Pages touched: [[pages/sources/2026-05-03-settings-list-device-identity-grilling]], [[pages/concepts/DeviceConnection]], [[pages/concepts/settings-ui]], `_index.md`, `_hot.md`, `log.md`
 - Notes: Ingested Settings row primitive/layout rules and device identity semantics. Captured token-first styling, hidden UUID/hash display in Settings rows, SQLite `settings` local identity, deprecated `device_identity.json` migration/deletion behavior, and pairing-time paired-device labels.
+
+## [2026-05-04] ingest | SpaceSync consent lifecycle and E2E results
+
+- Pages touched: [[pages/sources/2026-05-04-space-sync-consent-and-lifecycle]], [[pages/sources/2026-05-04-space-sync-implementation-and-e2e-results]], [[pages/concepts/SpaceSync]], [[pages/concepts/DeviceConnection]], [[pages/concepts/e2e-testing]], [[pages/e2e/space-sync/foo-create-via-dialog]], [[pages/e2e/space-sync/foo-bar-cross-map-via-dialog]], [[pages/e2e/space-sync/quest-sync-between-spaces]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Ingested one-space receiver-side SpaceSync consent, separated device pairing consent from space consent, marked batch mapping snapshot approval as superseded, captured `end_of_sync_at` end/re-enable behavior, and recorded final `make e2e-headed` passing 7 actor tests.

@@ -2,9 +2,9 @@
 title: E2E Testing
 type: concept
 created: 2026-04-12
-updated: 2026-04-27
-sources: [2026-03-22-e2e-testing-prd, 2026-04-26-two-plus-actor-e2e-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-04-27-split-e2e-ci-workflow-steps, 2026-04-27-ci-quality-gates-cache-split]
-tags: [fini, testing, e2e, playwright, tauri-driver, mcp, docker, multi-device, ci]
+updated: 2026-05-04
+sources: [2026-03-22-e2e-testing-prd, 2026-04-26-two-plus-actor-e2e-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-04-27-split-e2e-ci-workflow-steps, 2026-04-27-ci-quality-gates-cache-split, 2026-05-04-space-sync-consent-and-lifecycle, 2026-05-04-space-sync-implementation-and-e2e-results]
+tags: [fini, testing, e2e, playwright, tauri-driver, mcp, docker, multi-device, ci, space-sync]
 ---
 
 # E2E Testing
@@ -36,6 +36,8 @@ The current command split is explicit [[sources/2026-04-26-headed-local-e2e-main
 - Local actors use isolated `FINI_APP_DATA_DIR` directories under `/var/tmp`, stable hostnames `actor-a` / `actor-b`, and per-actor `TAURI_PLAYWRIGHT_SOCKET` paths.
 - `FINI_E2E_KEEP=1` should leave local windows/processes available for debugging.
 - The main local proof is Settings/Add Device pairing between the two visible app instances, followed by each app showing the other's device name.
+- Headed actor automation should route each actor directly to `#/settings/add-device` when driving Add Device across multiple Tauri windows; this fixed a multi-window automation stall caught by local E2E [[sources/2026-05-04-space-sync-implementation-and-e2e-results]].
+- Final verification for the one-space sync lifecycle: `make e2e-headed` passed 7 actor tests [[sources/2026-05-04-space-sync-implementation-and-e2e-results]].
 
 ## Default test topology
 
@@ -107,8 +109,10 @@ The wiki already contains concrete E2E scenario specs that should feed the runne
 
 - [[pages/e2e/device-connection/pairing-happy-path]] — two-device pairing, passcode entry, presence, and add-mode cleanup.
 - [[pages/e2e/space-sync/foo-create-via-dialog]] — incoming custom-space resolution via `Create`.
-- [[pages/e2e/space-sync/foo-bar-cross-map-via-dialog]] — cross-mapping remote spaces onto different local spaces without duplicate creation.
-- [[pages/e2e/space-sync/quest-sync-between-spaces]] — quest movement across mapped and unmapped spaces with backfill after enabling mapping.
+- [[pages/e2e/space-sync/foo-bar-cross-map-via-dialog]] — historical batch/cross-map dialog intent; superseded by one-space receiver-side requests.
+- [[pages/e2e/space-sync/quest-sync-between-spaces]] — quest movement plus end/re-enable bootstrap/merge across mapped lifecycle state.
+
+Current SpaceSync E2E coverage should prove receiver-only one-space prompts, no prompt for already-active mappings on sync tick/reconnect, silent quest sync after approval, `end_of_sync_at` on removal, and re-enable bootstrap/merge [[sources/2026-05-04-space-sync-consent-and-lifecycle]] [[sources/2026-05-04-space-sync-implementation-and-e2e-results]].
 - [[pages/e2e/cli/README]] — CLI-first E2E expectations, structured output, and exit-code policy.
 - [[pages/e2e/interface/README]] — CLI/MCP parity through one shared action service.
 - [[pages/e2e/skill/README]] — natural-language action translation with deterministic outcomes.

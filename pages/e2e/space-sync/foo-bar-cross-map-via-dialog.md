@@ -11,6 +11,9 @@ author: user
 
 Validate that two custom spaces (`Foo`, `Bar`) can be mapped to different existing custom spaces on the paired device through incoming resolution, without forced same-name creation.
 
+> [!warning] Superseded by [[sources/2026-05-04-space-sync-consent-and-lifecycle]] (2026-05-04)
+> The batch approval shape in this scenario is no longer desired product behavior. Space sync consent is one not-yet-active space at a time, receiver-only, and startup/reconnect/tick must not replay mapping snapshots into modals.
+
 ## Preconditions
 
 - Device A and Device B are already paired.
@@ -22,21 +25,22 @@ Validate that two custom spaces (`Foo`, `Bar`) can be mapped to different existi
 ## Test Steps
 
 1. On Device A, open `Settings -> Device/:id` for Device B.
-2. In `Mapped spaces`, select `Foo` and `Bar`, then tap `Save mappings`.
-3. On Device B, open `Settings -> Device/:id` for Device A.
-4. Wait for incoming custom-space resolution entries for remote `Foo` and remote `Bar`.
-5. For remote `Foo`, choose `Select space to map`, then select local `Bar`.
-6. For remote `Bar`, choose `Select space to map`, then select local `Foo`.
-7. Confirm and apply both resolutions.
+2. In `Mapped spaces`, select only `Foo`, then tap `Save mappings`.
+3. On Device B, wait for the one-space incoming request for remote `Foo`.
+4. Resolve remote `Foo` to local `Bar` and confirm.
+5. On Device A, select only `Bar`, then tap `Save mappings`.
+6. On Device B, wait for the one-space incoming request for remote `Bar`.
+7. Resolve remote `Bar` to local `Foo` and confirm.
 8. Reload mappings/status on Device B.
 9. Reload mappings/status on Device A.
 10. Reopen device detail on both sides and verify mapping persistence.
 
 ## Assertions
 
-- Both incoming custom spaces are resolved through `Select space to map`.
+- Incoming custom spaces are resolved sequentially, one space request at a time.
 - Remote `Foo` maps to local `Bar`.
 - Remote `Bar` maps to local `Foo`.
+- Device A does not show the incoming requests it initiated.
 - No duplicate custom space is created as a side effect.
 - Existing `Foo` and `Bar` spaces remain present on both devices.
 - No custom space is deleted or implicitly renamed.

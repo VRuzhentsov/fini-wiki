@@ -2,9 +2,9 @@
 title: DeviceConnection
 type: concept
 created: 2026-04-12
-updated: 2026-05-03
-sources: [2026-03-29-device-synchronizations-design, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-05-02-device-settings-last-synced-date-time, 2026-05-03-settings-list-device-identity-grilling]
-tags: [fini, sync, pairing, discovery, device-connection, mdns, dns-sd, settings]
+updated: 2026-05-04
+sources: [2026-03-29-device-synchronizations-design, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-05-02-device-settings-last-synced-date-time, 2026-05-03-settings-list-device-identity-grilling, 2026-05-04-space-sync-consent-and-lifecycle, 2026-05-04-space-sync-implementation-and-e2e-results]
+tags: [fini, sync, pairing, discovery, device-connection, mdns, dns-sd, settings, consent]
 ---
 
 # DeviceConnection
@@ -18,6 +18,7 @@ Current service boundaries are locked by [[sources/2026-03-29-device-synchroniza
 - `spec/DeviceConnection.md` owns discovery/presence/pairing UX + control-plane behavior.
 - `spec/SpaceSync.md` owns space mapping + data replication behavior.
 - `spec/Network.md` owns transport-level contracts shared by both services.
+- Device pairing consent is separate from [[SpaceSync]] space-sync consent [[sources/2026-05-04-space-sync-consent-and-lifecycle]].
 
 ## Settings information architecture
 
@@ -118,6 +119,7 @@ Add-device mode is the only state where new pairing requests are accepted [[sour
 Add-device mode is active only in `/settings/add-device`.
 
 - Pairing requests are processed only when both peers are in add-device mode.
+- Incoming device connection requests are inline list items in the device/add-device flow, not global modal dialogs [[sources/2026-05-04-space-sync-consent-and-lifecycle]].
 - Discovery cadence in add-device mode: every 5s.
 - Candidate list rules:
   - newest seen first
@@ -134,12 +136,15 @@ Pairing is explicit and survives restart until unpair [[sources/2026-03-29-devic
   - first click timestamp wins
   - tie-breaker: lower `device_id`
 - Receiver sees incoming request sheet.
+- Newer consent guidance sharpens this into inline list-item UX, not a global modal [[sources/2026-05-04-space-sync-consent-and-lifecycle]].
 - Sender sees code only after receiver accepts.
 - Wrong code policy: 3 attempts then 60s cooldown.
 - Pending request timeout: 60s.
 - Pairing survives restart until unpair.
 
 Under the mDNS architecture, peer-specific pairing messages move from UDP to the resolved WebSocket endpoint [[sources/2026-04-26-mdns-sd-device-discovery-architecture]]. The passcode trust ceremony stays: mDNS says where a peer claims to be, pairing decides whether the user trusts it, and WebSocket auth later proves trusted-device possession.
+
+Space-sync consent is not part of pairing. After two devices are paired, each not-yet-active space still needs its own receiver-side one-space approval before quest traffic for that space begins [[sources/2026-05-04-space-sync-consent-and-lifecycle]].
 
 ## E2E pairing precondition
 
@@ -150,6 +155,7 @@ The reusable multi-actor E2E helper should use real UI pairing for coverage, the
 - It ensures each actor is paired with each other actor.
 - For `2+` actors, the initial default topology is full mesh.
 - The local headed proof launches visible `actor-a` / `actor-b` windows and exercises the real Settings/Add Device flow [[sources/2026-04-26-headed-local-e2e-main-use-case]].
+- Local headed E2E later found multi-window click navigation to Add Device was unreliable; routing each actor directly to `#/settings/add-device` fixed the automation issue, and the final `make e2e-headed` run passed 7 actor tests [[sources/2026-05-04-space-sync-implementation-and-e2e-results]].
 
 ## Transport scope
 

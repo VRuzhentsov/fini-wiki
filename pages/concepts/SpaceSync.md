@@ -2,9 +2,9 @@
 title: SpaceSync
 type: concept
 created: 2026-04-12
-updated: 2026-05-02
-sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-05-02-device-settings-last-synced-date-time]
-tags: [fini, sync, replication, spaces, websocket]
+updated: 2026-05-04
+sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-05-02-device-settings-last-synced-date-time, 2026-05-04-space-sync-consent-and-lifecycle, 2026-05-04-space-sync-implementation-and-e2e-results]
+tags: [fini, sync, replication, spaces, websocket, consent, lifecycle]
 ---
 
 # SpaceSync
@@ -38,6 +38,23 @@ Mapping is symmetric, pair-level, and keyed by `space_id` rather than names [[so
 - Mapping is pair-level and symmetric.
 - A mapping update on one peer is replicated and becomes effective on both peers.
 - Mapping unit is `space_id` (id-based, never name-based).
+- Space sync consent is per space and distinct from device pairing consent [[sources/2026-05-04-space-sync-consent-and-lifecycle]].
+- Incoming space sync consent is receiver-only: only the peer being asked to sync the space sees the global modal [[sources/2026-05-04-space-sync-consent-and-lifecycle]].
+- `Incoming space sync request` is only for one not-yet-active space at a time; batch snapshot approval for multiple spaces is not desired product behavior [[sources/2026-05-04-space-sync-consent-and-lifecycle]].
+- Already-synced spaces must not prompt again on startup, reconnect, session bootstrap, or normal sync tick [[sources/2026-05-04-space-sync-consent-and-lifecycle]].
+
+> [!warning] Superseded by [[sources/2026-05-04-space-sync-consent-and-lifecycle]] (2026-05-04)
+> Any older behavior or test language that treats full mapping snapshots or batch approval prompts as desired product behavior is superseded. Startup/reconnect/tick reconciliation must not replay active mappings into approval modals.
+
+## Mapping lifecycle
+
+`space_sync_update_mappings` is the user-initiated lifecycle boundary for space sync consent [[sources/2026-05-04-space-sync-implementation-and-e2e-results]].
+
+- Newly added spaces send one-space requests to the peer [[sources/2026-05-04-space-sync-implementation-and-e2e-results]].
+- Removed spaces send `space_sync_end`, record `end_of_sync_at`, and stop future sync after the end event is recorded [[sources/2026-05-04-space-sync-consent-and-lifecycle]] [[sources/2026-05-04-space-sync-implementation-and-e2e-results]].
+- Ended mappings are retained as lifecycle rows rather than simply deleted; active mappings are filtered with `end_of_sync_at IS NULL` [[sources/2026-05-04-space-sync-implementation-and-e2e-results]].
+- Re-enabling an ended space clears `end_of_sync_at`, resets `last_synced_at`, triggers bootstrap, and merges all quest changes made while sync was off [[sources/2026-05-04-space-sync-consent-and-lifecycle]] [[sources/2026-05-04-space-sync-implementation-and-e2e-results]].
+- Current lifecycle state can live on the mapping row; a full history table is deferred unless future audit/history UI needs it [[sources/2026-05-04-space-sync-consent-and-lifecycle]].
 
 ## Bootstrap behavior
 
@@ -46,6 +63,7 @@ Enabling mapping is not future-only; it immediately syncs existing records too [
 - When a mapping is enabled for a space, run immediate bootstrap sync.
 - Bootstrap includes existing records for that space, not future-only changes.
 - If mapped space does not exist on peer, auto-create it with the same `space_id`.
+- Re-enable after end-of-sync is also a bootstrap boundary and must merge quest changes made on both devices while sync was off [[sources/2026-05-04-space-sync-consent-and-lifecycle]].
 
 ## Mapped-space status visibility
 
@@ -62,6 +80,8 @@ The design keeps sync process-bound in this phase and relies on durable replay a
 - Sync runs while app process is alive.
 - If app is closed, no background daemon/service is required in this phase.
 - Reconnect performs catch-up from durable queue.
+- Startup, reconnect, and sync tick must not replay mapping snapshots into approval modals for active mappings [[sources/2026-05-04-space-sync-consent-and-lifecycle]] [[sources/2026-05-04-space-sync-implementation-and-e2e-results]].
+- `space_sync_tick` must not send mapping snapshots for active mappings merely because a websocket session appears [[sources/2026-05-04-space-sync-implementation-and-e2e-results]].
 
 ## Transport and session model
 
@@ -83,6 +103,7 @@ The lock here is durable outbox plus ACK replay with a generic event envelope [[
 - Durable outbox + ACK replay.
 - Every local mutation becomes a sync event.
 - Event envelope is generic across entities.
+- Quest create/update/delete traffic for active mapped spaces syncs silently in the background without user prompts after the space is approved [[sources/2026-05-04-space-sync-consent-and-lifecycle]].
 
 Minimum event envelope fields:
 
@@ -135,6 +156,7 @@ The conflict order is explicitly defined and should be treated as current policy
   2. if equal, lexicographically lower `origin_device_id` wins
   3. if still equal, lexicographically lower `event_id` wins
 - Event dedupe key is `event_id`.
+- Quest UUID primary keys support cross-device merge/convergence, including re-enable bootstrap after sync was off [[sources/2026-05-04-space-sync-consent-and-lifecycle]].
 
 ## Fan-out topology
 

@@ -1,6 +1,6 @@
 # Hot Cache
 
-Updated: 2026-05-03
+Updated: 2026-05-04
 
 ## Current Fini Architecture
 
@@ -26,6 +26,12 @@ Updated: 2026-05-03
 - Device display names are labels, not identity. UUIDs remain hidden route/storage identity; duplicate display names are allowed.
 - Local device identity now lives in SQLite `settings` rows `device.id` and `device.name`; deprecated `device_identity.json` is migration input only and should be deleted after settings identity is valid.
 - Paired-device `display_name` is captured at pairing time and does not auto-update from later discovery names.
+- Device pairing consent is separate from SpaceSync consent. Incoming device connection requests are inline list items, not global modals.
+- SpaceSync consent is one receiver-side global modal for one not-yet-active space at a time. Batch mapping snapshot approval is not desired behavior.
+- Startup, reconnect, session bootstrap, and sync tick must not replay active mappings into approval modals; already-synced spaces must not prompt again.
+- Quest create/update/delete traffic for active mapped spaces syncs silently in the background after approval.
+- Removing a mapped space sends `space_sync_end`, records `end_of_sync_at`, and stops future sync. Re-enable clears `end_of_sync_at`, resets bootstrap state, and merges quest changes made while sync was off.
+- Local headed E2E caught and fixed Add Device multi-window automation by direct routing to `#/settings/add-device`; final `make e2e-headed` passed 7 actor tests.
 
 ## Active Wiki Threads
 
@@ -36,7 +42,8 @@ Updated: 2026-05-03
 - [[Reminder]] — backend-managed bridge from quest due fields to local OS notifications.
 - [[e2e-testing]] — staged testing strategy plus new two-plus-actor container architecture.
 - [[CLI]] — desired primary synchronous automation surface with MCP parity and shared action-service contract.
-- [[DeviceConnection]] — now includes mDNS/DNS-SD discovery and WebSocket pairing direction.
+- [[DeviceConnection]] — includes mDNS/DNS-SD discovery, WebSocket pairing, and inline pairing consent distinct from SpaceSync consent.
+- [[SpaceSync]] — one-space receiver-side consent lifecycle with `end_of_sync_at` end/re-enable semantics.
 - [[github-actions-pipelines]] — includes split E2E CI phase guidance plus backend compile/test cache split.
 - [[settings-ui]] — locked Settings row primitive/layout rules and token-first styling constraints.
 
