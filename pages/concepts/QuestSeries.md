@@ -2,8 +2,8 @@
 title: QuestSeries
 type: concept
 created: 2026-04-12
-updated: 2026-04-26
-sources: [2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling]
+updated: 2026-05-04
+sources: [2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-history-grouped-occurrence-ticket]
 tags: [fini, quests, series, repeat, reminders]
 ---
 
@@ -31,6 +31,7 @@ Template record for repeating quests. A series defines cadence and generation ru
 - Completing an occurrence should keep series active and prepare the next nearest open occurrence.
 - Only the closest not-yet-resolved occurrence is surfaced in active quest lists by default.
 - Historical occurrences remain visible in [[HistoryView]] and history endpoints.
+- Active-list grouping should remain unchanged; issue `VRuzhentsov/fini#20` scopes same-series grouping work to History only [[sources/2026-05-04-history-grouped-occurrence-ticket]].
 
 ## Reminder behavior
 

@@ -32,6 +32,9 @@ Updated: 2026-05-04
 - Quest create/update/delete traffic for active mapped spaces syncs silently in the background after approval.
 - Removing a mapped space sends `space_sync_end`, records `end_of_sync_at`, and stops future sync. Re-enable clears `end_of_sync_at`, resets bootstrap state, and merges quest changes made while sync was off.
 - Local headed E2E caught and fixed Add Device multi-window automation by direct routing to `#/settings/add-device`; final `make e2e-headed` passed 7 actor tests.
+- Current History page still shows same-series resolved occurrences as separate rows; ticket `#20` scopes grouping changes to History only and keeps active-list grouping unchanged.
+- E2E follow-up ticket `#19` should assert that completing an occurrence on one paired device completes the same occurrence identity on the other.
+- Android reminder delivery is mostly wired, but Android 13+ still needs just-in-time `POST_NOTIFICATIONS` manifest/runtime/frontend support before debug builds can reliably claim native notification delivery.
 
 ## Active Wiki Threads
 
@@ -40,12 +43,14 @@ Updated: 2026-05-04
 - [[Space]] — built-in string space ids and delete-to-Personal reassignment.
 - [[mcp-contract]] — public contract depends on the same string-id storage model.
 - [[Reminder]] — backend-managed bridge from quest due fields to local OS notifications.
+- [[QuestOccurrence]] — deterministic occurrence identity plus current History-only grouping ticket and paired-device sync E2E follow-up.
 - [[e2e-testing]] — staged testing strategy plus new two-plus-actor container architecture.
 - [[CLI]] — desired primary synchronous automation surface with MCP parity and shared action-service contract.
 - [[DeviceConnection]] — includes mDNS/DNS-SD discovery, WebSocket pairing, and inline pairing consent distinct from SpaceSync consent.
 - [[SpaceSync]] — one-space receiver-side consent lifecycle with `end_of_sync_at` end/re-enable semantics.
 - [[github-actions-pipelines]] — includes split E2E CI phase guidance plus backend compile/test cache split.
 - [[settings-ui]] — locked Settings row primitive/layout rules and token-first styling constraints.
+- [[os-notification]] — current Android notification pipeline mostly exists; Android 13+ permission bridge is still missing.
 
 ## Current Design Thread
 

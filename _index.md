@@ -33,12 +33,12 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/concepts/mcp-contract]] — MCP evolution from string-id migration to structured JSON outputs (3 sources)
 - [[pages/concepts/release-gitops]] — signed-tag GitHub Actions release pipeline with keyless cosign and GHCR publishing (2 sources)
 - [[pages/concepts/github-actions-pipelines]] — PR quality gates, release workflows, split E2E phases, backend compile/test cache split (4 sources)
-- [[pages/concepts/e2e-testing]] — multi-actor E2E plus headed proof of one-space sync lifecycle; final local run passed 7 tests (8 sources)
-- [[pages/concepts/os-notification]] — platform surface that delivers reminders; past-due now fires immediately and remains local per device (2 sources)
-- [[pages/concepts/Reminder]] — derived local reminder row managed from quest due fields; one row per due-dated active quest (4 sources)
+- [[pages/concepts/e2e-testing]] — multi-actor E2E plus one-space sync proof; follow-up ticket covers same-occurrence completion sync (9 sources)
+- [[pages/concepts/os-notification]] — platform surface that delivers reminders; Android 13+ permission bridge still missing in current debug builds (3 sources)
+- [[pages/concepts/Reminder]] — derived local reminder row managed from quest due fields; Android permission gap is now explicit (5 sources)
 - [[pages/concepts/Quest]] — core actionable record; due fields now drive reminder scheduling through backend bridge logic (4 sources)
-- [[pages/concepts/QuestSeries]] — repeating template record; no separate series reminder template in current direction (2 sources)
-- [[pages/concepts/QuestOccurrence]] — generated actionable occurrence; reminders now derive through the same quest bridge (2 sources)
+- [[pages/concepts/QuestSeries]] — repeating template record; active-list grouping stays unchanged while History-only grouping is ticketed (3 sources)
+- [[pages/concepts/QuestOccurrence]] — generated actionable occurrence; History-only grouping and same-occurrence sync E2E are now tracked (4 sources)
 - [[pages/concepts/CLI]] — desired primary synchronous interface with `--json`, stable exit codes, and MCP parity targets (0 raw sources)
 - [[pages/concepts/settings-ui]] — Settings list primitives, row layout rules, token-first styling, and hidden UUID display policy (1 source)
 
@@ -83,6 +83,9 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/sources/2026-05-03-settings-list-device-identity-grilling]] — locks Settings row primitives and separates device labels from UUID identity
 - [[pages/sources/2026-05-04-space-sync-consent-and-lifecycle]] — locks one-space receiver-side SpaceSync consent and end/re-enable lifecycle semantics
 - [[pages/sources/2026-05-04-space-sync-implementation-and-e2e-results]] — records implementation details and `make e2e-headed` passing 7 actor tests
+- [[pages/sources/2026-05-04-history-grouped-occurrence-ticket]] — tracks History-only grouping of same-series resolved occurrences via GitHub issue `#20`
+- [[pages/sources/2026-05-04-occurrence-completion-sync-e2e-ticket]] — tracks same-occurrence completion sync E2E via GitHub issue `#19`
+- [[pages/sources/2026-05-04-android-notification-debug-build]] — captures current Android reminder pipeline and missing Android 13+ permission bridge
 
 ## Comparisons & Analyses
 - [[pages/concepts/device-sync-architecture]] — supersession chain from MVP.1 sync intent to archived `device_sync` to current split architecture (3 sources)

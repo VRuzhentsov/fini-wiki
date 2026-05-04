@@ -2,8 +2,8 @@
 title: OS Notification
 type: concept
 created: 2026-04-21
-updated: 2026-04-26
-sources: [2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling]
+updated: 2026-05-04
+sources: [2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-android-notification-debug-build]
 tags: [fini, notifications, os, scheduling, android, linux, windows, macos]
 ---
 
@@ -57,6 +57,12 @@ Notification permission is requested just-in-time rather than on first launch [[
 - Settings toggle remains as a fallback entry point.
 - Matches the planned pattern for mic permission (issue #10).
 - If denied, reminder metadata remains editable with a subtle visible warning (inherited from [[Reminder]]).
+
+## Android implementation status
+
+- Current Android scheduling/channel plumbing is mostly already present through `tauri-plugin-notification`, `setup_notification_channel(...)`, and the reminder scheduling path [[sources/2026-05-04-android-notification-debug-build]].
+- The main current gap is Android 13+ `POST_NOTIFICATIONS` permission support: the generated Android manifest does not declare it, `MainActivity.kt` only requests `RECORD_AUDIO`, and the frontend reminder flow has no permission bridge yet [[sources/2026-05-04-android-notification-debug-build]].
+- The required UX remains just-in-time permission from reminder create/enable flows, not app-launch permission prompting [[sources/2026-05-04-android-notification-debug-build]].
 
 ## Interaction
 

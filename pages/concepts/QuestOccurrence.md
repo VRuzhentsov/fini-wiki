@@ -2,8 +2,8 @@
 title: QuestOccurrence
 type: concept
 created: 2026-04-12
-updated: 2026-04-26
-sources: [2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling]
+updated: 2026-05-04
+sources: [2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-history-grouped-occurrence-ticket, 2026-05-04-occurrence-completion-sync-e2e-ticket]
 tags: [fini, quests, occurrence, repeat, reminders]
 ---
 
@@ -30,6 +30,17 @@ Concrete dated instance produced from a [[QuestSeries]]. In UI and MCP, this is 
 - Deterministic occurrence `id` prevents duplicates when offline devices generate the same period occurrence.
 - In shared spaces, one completion resolves the occurrence for all paired devices.
 - Completion/abandonment suppresses pending reminders for that occurrence.
+
+## History presentation
+
+- Current History behavior still renders completed and abandoned same-series occurrences as separate rows [[sources/2026-05-04-history-grouped-occurrence-ticket]].
+- Issue `VRuzhentsov/fini#20` tracks a History-only grouping fix so same-series occurrences can appear as a single History row [[sources/2026-05-04-history-grouped-occurrence-ticket]].
+- This scope does not change the main active quest list grouping, which is already treated as correct [[sources/2026-05-04-history-grouped-occurrence-ticket]].
+
+## E2E follow-up
+
+- Issue `VRuzhentsov/fini#19` tracks a paired-device E2E test that completes an occurrence on device A and verifies the same occurrence identity becomes completed on device B after sync [[sources/2026-05-04-occurrence-completion-sync-e2e-ticket]].
+- The assertion must check the same occurrence identity, not merely that some occurrence becomes completed on the peer [[sources/2026-05-04-occurrence-completion-sync-e2e-ticket]].
 
 ## Reminder materialization
 

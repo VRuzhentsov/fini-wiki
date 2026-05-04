@@ -2,8 +2,8 @@
 title: Reminder
 type: concept
 created: 2026-04-12
-updated: 2026-04-24
-sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling]
+updated: 2026-05-04
+sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-android-notification-debug-build]
 tags: [fini, reminders, notifications, focus]
 ---
 
@@ -104,6 +104,8 @@ Snooze is **notification-level**, not reminder-level [[sources/2026-04-21-notifi
 ## Permissions
 
 Permission is requested **just-in-time on first reminder save** (rationale UI + system prompt), with a Settings toggle as fallback [[sources/2026-04-21-notifications-grilling]]. If denied, the quest can still have a due date, but the notification will not deliver — a subtle UI warning is shown [[sources/2026-03-21-mvp-baseline]].
+
+Current Android implementation note: the reminder scheduling path is largely present already, but Android 13+ debug builds still need `POST_NOTIFICATIONS` declared/requested plus a frontend reminder-flow permission bridge before the app can reliably claim native OS notification delivery [[sources/2026-05-04-android-notification-debug-build]].
 
 ## Multi-device behavior
 

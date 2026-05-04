@@ -136,3 +136,8 @@ Append-only chronological record. Parseable: `grep "^## \[" log.md | tail -10`.
 
 - Pages touched: [[pages/sources/2026-05-04-space-sync-consent-and-lifecycle]], [[pages/sources/2026-05-04-space-sync-implementation-and-e2e-results]], [[pages/concepts/SpaceSync]], [[pages/concepts/DeviceConnection]], [[pages/concepts/e2e-testing]], [[pages/e2e/space-sync/foo-create-via-dialog]], [[pages/e2e/space-sync/foo-bar-cross-map-via-dialog]], [[pages/e2e/space-sync/quest-sync-between-spaces]], `_index.md`, `_hot.md`, `log.md`
 - Notes: Ingested one-space receiver-side SpaceSync consent, separated device pairing consent from space consent, marked batch mapping snapshot approval as superseded, captured `end_of_sync_at` end/re-enable behavior, and recorded final `make e2e-headed` passing 7 actor tests.
+
+## [2026-05-04] ingest | History occurrence ticket, occurrence sync E2E ticket, and Android notification debug build
+
+- Pages touched: [[pages/sources/2026-05-04-history-grouped-occurrence-ticket]], [[pages/sources/2026-05-04-occurrence-completion-sync-e2e-ticket]], [[pages/sources/2026-05-04-android-notification-debug-build]], [[pages/concepts/QuestOccurrence]], [[pages/concepts/QuestSeries]], [[pages/concepts/e2e-testing]], [[pages/concepts/os-notification]], [[pages/concepts/Reminder]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Ingested three new 2026-05-04 raw docs. Captured History-only same-series occurrence grouping scope (issue `#20`), paired-device same-occurrence completion sync E2E follow-up (issue `#19`), and the current Android reminder pipeline gap around just-in-time `POST_NOTIFICATIONS` support in debug builds.

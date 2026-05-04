@@ -3,7 +3,7 @@ title: E2E Testing
 type: concept
 created: 2026-04-12
 updated: 2026-05-04
-sources: [2026-03-22-e2e-testing-prd, 2026-04-26-two-plus-actor-e2e-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-04-27-split-e2e-ci-workflow-steps, 2026-04-27-ci-quality-gates-cache-split, 2026-05-04-space-sync-consent-and-lifecycle, 2026-05-04-space-sync-implementation-and-e2e-results]
+sources: [2026-03-22-e2e-testing-prd, 2026-04-26-two-plus-actor-e2e-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-04-27-split-e2e-ci-workflow-steps, 2026-04-27-ci-quality-gates-cache-split, 2026-05-04-space-sync-consent-and-lifecycle, 2026-05-04-space-sync-implementation-and-e2e-results, 2026-05-04-occurrence-completion-sync-e2e-ticket]
 tags: [fini, testing, e2e, playwright, tauri-driver, mcp, docker, multi-device, ci, space-sync]
 ---
 
@@ -113,6 +113,8 @@ The wiki already contains concrete E2E scenario specs that should feed the runne
 - [[pages/e2e/space-sync/quest-sync-between-spaces]] — quest movement plus end/re-enable bootstrap/merge across mapped lifecycle state.
 
 Current SpaceSync E2E coverage should prove receiver-only one-space prompts, no prompt for already-active mappings on sync tick/reconnect, silent quest sync after approval, `end_of_sync_at` on removal, and re-enable bootstrap/merge [[sources/2026-05-04-space-sync-consent-and-lifecycle]] [[sources/2026-05-04-space-sync-implementation-and-e2e-results]].
+
+Issue `VRuzhentsov/fini#19` adds another narrow follow-up lane: explicit occurrence-completion sync across paired devices, with the assertion tied to the same occurrence identity rather than any generic completed occurrence [[sources/2026-05-04-occurrence-completion-sync-e2e-ticket]].
 - [[pages/e2e/cli/README]] — CLI-first E2E expectations, structured output, and exit-code policy.
 - [[pages/e2e/interface/README]] — CLI/MCP parity through one shared action service.
 - [[pages/e2e/skill/README]] — natural-language action translation with deterministic outcomes.
