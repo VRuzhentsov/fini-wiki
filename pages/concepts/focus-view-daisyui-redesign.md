@@ -2,8 +2,8 @@
 title: Focus View DaisyUI Redesign
 type: analysis
 created: 2026-04-12
-updated: 2026-04-12
-sources: [2026-03-21-mvp-baseline, 2026-03-28-quest-space-assignment, 2026-03-29-device-synchronizations-design]
+updated: 2026-05-05
+sources: [2026-03-21-mvp-baseline, 2026-03-28-quest-space-assignment, 2026-03-29-device-synchronizations-design, 2026-05-04-complete-button-single-click, 2026-05-05-context-menu-responsive-side-sheet-grilling]
 tags: [fini, focus, ui, ux, daisyui, frontend]
 ---
 
@@ -72,6 +72,7 @@ Contents:
 Behavior notes:
 
 - If no active focus quest exists, keep the same card footprint but swap in an empty-state message and an affordance pointing toward quick capture.
+- The primary `Complete` action is now a normal single click; hold-to-complete is no longer part of the intended interaction model [[sources/2026-05-04-complete-button-single-click]].
 - The card should visually answer one question immediately: "What should I do now?"
 
 ### Quick capture card
@@ -165,6 +166,8 @@ The work should be limited to presentation and composition in:
 - `src/components/FocusView/ActiveQuestPanel.vue`
 - `src/components/FocusView/NewQuestForm.vue`
 - `src/components/QuestsView/QuestList.vue` only where needed to support the Focus backlog presentation
+
+Action surfaces that open context menus should follow the newer responsive side-sheet menu rules rather than raw cursor-popup placement [[sources/2026-05-05-context-menu-responsive-side-sheet-grilling]].
 
 ## Verification checklist
 

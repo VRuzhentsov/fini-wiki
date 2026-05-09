@@ -26,7 +26,8 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/concepts/tauri-distribution]] — official guidance for five distribution channels in 2.0 (1 source)
 - [[pages/concepts/capability-based-security]] — general pattern that Tauri's permission model resembles (1 source, inferred)
 - [[pages/concepts/webview-desktop-apps]] — bundled-engine vs platform-WebView trade-offs in desktop web apps (1 source)
-- [[pages/concepts/focus]] — current replacement for `Main`; computed from quest state plus focus-history events (3 sources)
+- [[pages/concepts/focus]] — computed Focus now includes virtual reminder-due timestamps for open-app preemption (4 sources)
+- [[pages/concepts/context-menu]] — responsive side-sheet context menu with app-window placement and bounded submenu behavior (1 source)
 - [[pages/concepts/DeviceConnection]] — pairing/discovery control plane; inline pairing consent distinct from SpaceSync consent (8 sources)
 - [[pages/concepts/SpaceSync]] — one-space receiver-side consent lifecycle with end/re-enable semantics for mapped spaces (8 sources)
 - [[pages/concepts/FocusHistory]] — owner-scoped event log; reminder-triggered rows are backdated by the main-process reconciler (4 sources)
@@ -86,6 +87,9 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/sources/2026-05-04-history-grouped-occurrence-ticket]] — tracks History-only grouping of same-series resolved occurrences via GitHub issue `#20`
 - [[pages/sources/2026-05-04-occurrence-completion-sync-e2e-ticket]] — tracks same-occurrence completion sync E2E via GitHub issue `#19`
 - [[pages/sources/2026-05-04-android-notification-debug-build]] — captures current Android reminder pipeline and missing Android 13+ permission bridge
+- [[pages/sources/2026-05-04-computed-focus-reminder-preemption]] — locks `Computed Due Wins` for open-app reminder-driven Focus preemption
+- [[pages/sources/2026-05-04-complete-button-single-click]] — drops hold-to-complete in the active Focus panel
+- [[pages/sources/2026-05-05-context-menu-responsive-side-sheet-grilling]] — redesigns context menus as responsive side-sheet surfaces
 
 ## Comparisons & Analyses
 - [[pages/concepts/device-sync-architecture]] — supersession chain from MVP.1 sync intent to archived `device_sync` to current split architecture (3 sources)

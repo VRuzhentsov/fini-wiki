@@ -141,3 +141,8 @@ Append-only chronological record. Parseable: `grep "^## \[" log.md | tail -10`.
 
 - Pages touched: [[pages/sources/2026-05-04-history-grouped-occurrence-ticket]], [[pages/sources/2026-05-04-occurrence-completion-sync-e2e-ticket]], [[pages/sources/2026-05-04-android-notification-debug-build]], [[pages/concepts/QuestOccurrence]], [[pages/concepts/QuestSeries]], [[pages/concepts/e2e-testing]], [[pages/concepts/os-notification]], [[pages/concepts/Reminder]], `_index.md`, `_hot.md`, `log.md`
 - Notes: Ingested three new 2026-05-04 raw docs. Captured History-only same-series occurrence grouping scope (issue `#20`), paired-device same-occurrence completion sync E2E follow-up (issue `#19`), and the current Android reminder pipeline gap around just-in-time `POST_NOTIFICATIONS` support in debug builds.
+
+## [2026-05-05] ingest | Focus due-preemption, single-click complete, and responsive context menu
+
+- Pages touched: [[pages/sources/2026-05-04-computed-focus-reminder-preemption]], [[pages/sources/2026-05-04-complete-button-single-click]], [[pages/sources/2026-05-05-context-menu-responsive-side-sheet-grilling]], [[pages/concepts/focus]], [[pages/concepts/FocusHistory]], [[pages/concepts/Reminder]], [[pages/concepts/focus-view-daisyui-redesign]], [[pages/concepts/context-menu]], `_index.md`, `_hot.md`, `log.md`
+- Notes: Ingested three newest raw docs. Captured `Computed Due Wins` for open-app reminder-driven Focus preemption, corrected hot-cache/design language to reflect single-click Complete, and documented responsive side-sheet context-menu placement rules for narrow and quarter-screen windows.

@@ -2,8 +2,8 @@
 title: Focus
 type: concept
 created: 2026-04-12
-updated: 2026-04-21
-sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling]
+updated: 2026-05-05
+sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling, 2026-05-04-computed-focus-reminder-preemption]
 tags: [quest, focus, resolver]
 ---
 
@@ -21,11 +21,14 @@ Currently selected quest for user action. Computed by pure getter over quest sta
 
 ## Resolver rules
 
-1. Walk [[FocusHistory]] newest → oldest.
-2. First event whose target quest is still `active` wins → that quest is Focus.
-3. If the walk exhausts without a valid target, apply fallback order.
+1. Build valid timestamp candidates from persisted [[FocusHistory]] events and active reminder due timestamps.
+2. The newest valid timestamp wins → that quest is Focus.
+3. If no valid candidate remains, apply fallback order.
 
-LIFO preemption is a property of the walk, not a separate stack. Events from `manual`, `reminder`, and `restore` triggers are uniform; ordering is timestamp-only.
+Persisted events from `manual`, `reminder`, and `restore` triggers remain timestamp-ordered. Newer reminder semantics add virtual reminder-due timestamps as the same priority class for active quests [[sources/2026-05-04-computed-focus-reminder-preemption]].
+
+> [!warning] Superseded by [[sources/2026-05-04-computed-focus-reminder-preemption]] (2026-05-04)
+> The older reconciler-only framing implied open-app reminder preemption required a persisted `trigger = reminder` `focus_history` row. Newer Focus semantics treat due reminder timestamps as virtual focus events, so a quest can become Focus at its due boundary even while the app is already open.
 
 ## Fallback order
 
@@ -38,11 +41,11 @@ Applied when no FocusHistory event resolves to an active quest:
 
 ## Reminder preemption
 
-- Reminder fire → append [[FocusHistory]] event with `trigger = reminder`.
-- If reminder target is already `completed` or `abandoned` at fire time, reminder is suppressed and no event is written.
-- Completing the reminder-target quest does not mutate the event; resolver simply skips it on next walk because the target is no longer `active`.
-- The [[FocusHistory]] INSERT is performed by the main-process reconciler on engagement (launch/tap), not from the OS-notification callback, with `created_at` backdated to the original fire time [[sources/2026-04-21-notifications-grilling]].
-- **Foreground**: when the app is visible at fire time, Focus still switches (via the reminder event) and a subtle in-app toast is shown; the [[os-notification]] is suppressed to avoid a double-signal [[sources/2026-04-21-notifications-grilling]].
+- Active quest reminder due timestamps are virtual focus events that compete directly with persisted Focus timestamps [[sources/2026-05-04-computed-focus-reminder-preemption]].
+- A future reminder must not preempt current Focus before its due time [[sources/2026-05-04-computed-focus-reminder-preemption]].
+- Once the reminder is due, the due quest should become Focus even if the app is already open and no new `focus_history` row has been written yet [[sources/2026-05-04-computed-focus-reminder-preemption]].
+- If reminder target is already `completed` or `abandoned` at fire time, it is not a valid active candidate [[sources/2026-05-04-computed-focus-reminder-preemption]].
+- Persisted `trigger = reminder` rows still matter for historical/reconciled cases, but they are no longer required for open-app reminder preemption [[sources/2026-05-04-computed-focus-reminder-preemption]].
 - Focus does **not** depend on [[os-notification]]. OS notifications depend on Focus + [[Reminder]], not the reverse [[sources/2026-04-21-notifications-grilling]].
 
 ## Manual override

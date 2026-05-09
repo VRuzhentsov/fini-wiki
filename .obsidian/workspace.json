@@ -20,22 +20,6 @@
             }
           },
           {
-            "id": "af45d391b6499130",
-            "type": "leaf",
-            "pinned": true,
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "pages/concepts/Quest.md",
-                "mode": "source",
-                "source": false
-              },
-              "pinned": true,
-              "icon": "lucide-file",
-              "title": "Quest"
-            }
-          },
-          {
             "id": "d319e9527ef27fde",
             "type": "leaf",
             "state": {
@@ -146,6 +130,104 @@
               "icon": "lucide-file",
               "title": "Space"
             }
+          },
+          {
+            "id": "ba9d09fc9b545a8c",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pages/concepts/Network.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Network"
+            }
+          },
+          {
+            "id": "a1e01048275a34ca",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pages/concepts/SpaceSync.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "SpaceSync"
+            }
+          },
+          {
+            "id": "00094e278f80b5f4",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pages/concepts/CLI.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "CLI"
+            }
+          },
+          {
+            "id": "134d1582034b33ab",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pages/concepts/e2e-testing.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "e2e-testing"
+            }
+          },
+          {
+            "id": "08a626fba65a830d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pages/concepts/DeviceConnection.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "DeviceConnection"
+            }
+          },
+          {
+            "id": "0edfb0267c913373",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pages/tooling/github-actions.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "github-actions"
+            }
+          },
+          {
+            "id": "584467aebd761312",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pages/concepts/settings-ui.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "settings-ui"
+            }
           }
         ]
       }
@@ -199,12 +281,28 @@
               "icon": "lucide-bookmark",
               "title": "Bookmarks"
             }
+          },
+          {
+            "id": "af45d391b6499130",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pages/concepts/Quest.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Quest"
+            }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 713.5,
+    "collapsed": true
   },
   "right": {
     "id": "a1fe7cee91f0a2fe",
@@ -308,41 +406,41 @@
   },
   "active": "9747600c0f4ec5c9",
   "lastOpenFiles": [
-    "pages/concepts/Space.md",
+    "pages/concepts/context-menu.md",
+    "pages/sources/2026-05-04-complete-button-single-click.md",
+    "pages/sources/2026-05-04-computed-focus-reminder-preemption.md",
+    "pages/sources/2026-05-05-context-menu-responsive-side-sheet-grilling.md",
+    "raw/2026-05-05-context-menu-responsive-side-sheet-grilling.md",
+    "raw/2026-05-04-computed-focus-reminder-preemption.md",
+    "raw/2026-05-04-complete-button-single-click.md",
+    "pages/sources/2026-05-04-android-notification-debug-build.md",
+    "pages/sources/2026-05-04-occurrence-completion-sync-e2e-ticket.md",
+    "pages/sources/2026-05-04-history-grouped-occurrence-ticket.md",
+    "raw/2026-05-04-history-grouped-occurrence-ticket.md",
+    "raw/2026-05-04-occurrence-completion-sync-e2e-ticket.md",
+    "raw/2026-05-04-android-notification-debug-build.md",
+    "pages/sources/2026-05-04-space-sync-implementation-and-e2e-results.md",
+    "pages/sources/2026-05-04-space-sync-consent-and-lifecycle.md",
+    "raw/2026-05-04-space-sync-implementation-and-e2e-results.md",
+    "raw/2026-05-04-space-sync-consent-and-lifecycle.md",
+    "pages/concepts/settings-ui.md",
+    "pages/tooling/github-actions.md",
     "pages/concepts/Quest.md",
-    "pages/entities/tauri.md",
-    "raw/Tauri 2.0 released Can it beat Electron this time.md",
-    "pages/concepts/focus-view-daisyui-redesign.md",
-    "pages/concepts/diesel-orm.md",
-    "pages/sources/2026-04-12-fini-current-data-layer.md",
-    "_hot.md",
-    "space-sync.md",
-    "pages/concepts/github-actions-pipelines.md",
-    "pages/sources/2026-04-12-fini-current-github-actions.md",
-    "pages/sources/2026-04-12-tauri-github-readme.md",
-    "pages/entities/mcp-typescript-sdk.md",
-    "pages/sources/2026-04-12-modelcontextprotocol-typescript-sdk-v1x.md",
-    "pages/entities/mcp-server-tauri.md",
-    "pages/sources/2026-04-12-mcp-server-tauri-github.md",
-    "pages/concepts/device-sync-architecture.md",
+    "raw/2026-04-27-repo-wiki-doc-split.md",
+    "pages/concepts/DeviceConnection.md",
     "pages/concepts/e2e-testing.md",
-    "pages/concepts/release-gitops.md",
-    "pages/concepts/mcp-contract.md",
-    "pages/concepts/mvp-baseline.md",
-    "pages/sources/2026-03-29-device-synchronizations-design.md",
-    "pages/sources/2026-03-28-quest-space-assignment.md",
-    "pages/sources/2026-03-23-sync-devices-design.md",
-    "pages/sources/2026-03-23-release-gitops-setup.md",
-    "pages/sources/2026-03-22-e2e-testing-prd.md",
+    "pages/concepts/CLI.md",
+    "pages/concepts/SpaceSync.md",
+    "pages/concepts/Network.md",
+    "pages/concepts/Reminder.md.tmp.1702004.1777000029038",
+    "raw/2026-04-24-reminder-due-bridge-grilling.md.tmp.1702004.1777000017422",
+    "raw/2026-04-24-reminder-due-bridge-grilling.md.tmp.1702004.1777000010310",
+    "raw/2026-04-24-reminder-due-bridge-grilling.md.tmp.1702004.1777000005974",
+    "pages/concepts/Reminder.md.tmp.1702004.1776999934007",
+    "raw/2026-04-24-reminder-due-bridge-grilling.md.tmp.1702004.1776999779601",
     "pages/e2e/space-sync",
     "pages/e2e/skill",
     "pages/e2e/interface",
-    "pages/e2e/device-connection",
-    "pages/e2e/cli",
-    "pages/e2e",
-    "pages/tooling/github-actions.md.tmp.3760380.1775973162834",
-    "pages/tooling",
-    "pages/concepts/focus.md.tmp.3760380.1775973135742",
-    "log.md.tmp.3743126.1775971041839"
+    "pages/e2e/device-connection"
   ]
 }

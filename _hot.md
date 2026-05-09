@@ -1,6 +1,6 @@
 # Hot Cache
 
-Updated: 2026-05-04
+Updated: 2026-05-05
 
 ## Current Fini Architecture
 
@@ -35,6 +35,9 @@ Updated: 2026-05-04
 - Current History page still shows same-series resolved occurrences as separate rows; ticket `#20` scopes grouping changes to History only and keeps active-list grouping unchanged.
 - E2E follow-up ticket `#19` should assert that completing an occurrence on one paired device completes the same occurrence identity on the other.
 - Android reminder delivery is mostly wired, but Android 13+ still needs just-in-time `POST_NOTIFICATIONS` manifest/runtime/frontend support before debug builds can reliably claim native notification delivery.
+- Focus now treats active reminder due timestamps as virtual focus events. Once due, a reminder quest can become Focus even while the app is already open; this no longer depends on a reconciler-written `focus_history` row.
+- Active Focus `Complete` is now intended to be single-click, not hold-to-complete.
+- Context menus should behave as responsive side-sheet surfaces with app-window-based sizing and second-half/overlay submenu placement, not raw cursor popups.
 
 ## Active Wiki Threads
 
@@ -44,14 +47,16 @@ Updated: 2026-05-04
 - [[mcp-contract]] — public contract depends on the same string-id storage model.
 - [[Reminder]] — backend-managed bridge from quest due fields to local OS notifications.
 - [[QuestOccurrence]] — deterministic occurrence identity plus current History-only grouping ticket and paired-device sync E2E follow-up.
+- [[focus]] — newer `Computed Due Wins` reminder-preemption semantics for open-app due boundaries.
 - [[e2e-testing]] — staged testing strategy plus new two-plus-actor container architecture.
 - [[CLI]] — desired primary synchronous automation surface with MCP parity and shared action-service contract.
 - [[DeviceConnection]] — includes mDNS/DNS-SD discovery, WebSocket pairing, and inline pairing consent distinct from SpaceSync consent.
 - [[SpaceSync]] — one-space receiver-side consent lifecycle with `end_of_sync_at` end/re-enable semantics.
 - [[github-actions-pipelines]] — includes split E2E CI phase guidance plus backend compile/test cache split.
 - [[settings-ui]] — locked Settings row primitive/layout rules and token-first styling constraints.
+- [[context-menu]] — responsive side-sheet placement rules for context menus and submenus.
 - [[os-notification]] — current Android notification pipeline mostly exists; Android 13+ permission bridge is still missing.
 
 ## Current Design Thread
 
-- [[pages/sources/2026-04-25-claude-design-spicy-sunrise-chat]] — active source for the spicy sunrise UI refresh. Key locked intent: shared `QuestEditor` across active-card and list-item expansion, `Reminder` opens from Date, top-nav selected-space chip shows chevron and clear button together, active quest actions use 25% Abandon / 75% Complete hold-to-act split, and light/dark theme support is mandatory.
+- [[pages/sources/2026-04-25-claude-design-spicy-sunrise-chat]] — active source for the spicy sunrise UI refresh. Key locked intent: shared `QuestEditor` across active-card and list-item expansion, `Reminder` opens from Date, top-nav selected-space chip shows chevron and clear button together, and light/dark theme support is mandatory. Newer raw docs supersede hold-to-complete and older popup-style context-menu assumptions.

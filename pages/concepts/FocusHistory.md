@@ -2,8 +2,8 @@
 title: FocusHistory
 type: concept
 created: 2026-04-12
-updated: 2026-04-26
-sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling]
+updated: 2026-05-05
+sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-computed-focus-reminder-preemption]
 tags: [fini, focus, history, sync]
 ---
 
@@ -40,6 +40,7 @@ The field set reflects the post-rename focus model rather than the older Main te
 Focus resolution walks these events against current quest state instead of mutating a single stored active quest pointer [[sources/2026-03-21-mvp-baseline]] [[sources/2026-03-29-device-synchronizations-design]].
 
 - Focus is computed from focus-history events + current quest states.
+- Open-app reminder preemption no longer depends exclusively on a persisted reminder event; newer Focus semantics allow active reminder due timestamps to compete as virtual focus events [[sources/2026-05-04-computed-focus-reminder-preemption]].
 - Latest valid focus event wins.
 - If latest target is no longer active, resolver falls back to next valid event.
 - If no valid focus event exists, fallback order from [[Quest]] applies.
@@ -74,6 +75,7 @@ Rows with `trigger = reminder` are written by a main-process reconciler on app e
 - `created_at` is the reminder's **original fire time**, not app-launch time. This preserves the newest-valid-wins resolver ordering across missed events.
 - Independent of OS-notification delivery state; after [[sources/2026-04-24-reminder-due-bridge-grilling]], both notification delivery and reconciliation treat past-due reminders as immediate rather than grace-bounded.
 - [[focus|Focus]] does not depend on OS notifications; a reminder can exist with a future fire time and no `focus_history` row.
+- Newer Focus semantics go further: once that reminder becomes due, it may become Focus through computed due-time comparison even before a reconciler-created `focus_history` row exists [[sources/2026-05-04-computed-focus-reminder-preemption]].
 
 Walkthrough:
 

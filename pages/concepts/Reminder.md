@@ -2,8 +2,8 @@
 title: Reminder
 type: concept
 created: 2026-04-12
-updated: 2026-05-04
-sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-android-notification-debug-build]
+updated: 2026-05-05
+sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-android-notification-debug-build, 2026-05-04-computed-focus-reminder-preemption]
 tags: [fini, reminders, notifications, focus]
 ---
 
@@ -82,14 +82,15 @@ When the app is visible, the OS notification is **suppressed**; [[focus|Focus]] 
 
 ## Trigger effects
 
-Reminder firing can temporarily preempt Focus, but suppressed reminders do not create invalid focus events [[sources/2026-03-21-mvp-baseline]]:
+Reminder due timestamps can temporarily preempt Focus, but suppressed reminders do not create invalid focus candidates [[sources/2026-03-21-mvp-baseline]] [[sources/2026-05-04-computed-focus-reminder-preemption]]:
 
 - If the target quest is `completed` or `abandoned`, the bridge has already deleted the Reminder row — no trigger.
-- If active, reminder trigger can preempt current Focus.
+- If active, a reminder due timestamp can preempt current Focus once the due time arrives [[sources/2026-05-04-computed-focus-reminder-preemption]].
 - Reminder preemption is temporary; Focus returns to previous valid target after the reminder's quest resolves.
-- Reminder-triggered focus writes a `trigger = reminder` event to [[FocusHistory]].
-- The INSERT is performed by the main Tauri process on engagement (launch or tap), with `created_at` backdated to the original fire time [[sources/2026-04-21-notifications-grilling]].
+- Persisted reminder-triggered focus rows in [[FocusHistory]] still exist for reconciled/historical cases.
+- The reconciler INSERT is performed by the main Tauri process on engagement (launch or tap), with `created_at` backdated to the original fire time [[sources/2026-04-21-notifications-grilling]].
 - [[focus|Focus]] does **not** depend on OS notifications — a reminder can exist with a future fire time and no `focus_history` row [[sources/2026-04-21-notifications-grilling]].
+- Newer Focus semantics add that once the due boundary passes, the due quest can become Focus via computed due-time comparison even before any reconciler-created `focus_history` row exists [[sources/2026-05-04-computed-focus-reminder-preemption]].
 
 ## Snooze
 
