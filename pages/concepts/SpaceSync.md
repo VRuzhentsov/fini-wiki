@@ -5,11 +5,22 @@ created: 2026-04-12
 updated: 2026-05-04
 sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-05-02-device-settings-last-synced-date-time, 2026-05-04-space-sync-consent-and-lifecycle, 2026-05-04-space-sync-implementation-and-e2e-results]
 tags: [fini, sync, replication, spaces, websocket, consent, lifecycle]
+claim_status: locked
+evidence: source-backed
 ---
 
 # SpaceSync
 
 Per-space data synchronization between paired devices [[sources/2026-03-29-device-synchronizations-design]].
+
+depends_on:: [[pages/concepts/DeviceConnection]]
+uses:: [[pages/concepts/Quest]]
+uses:: [[pages/concepts/QuestOccurrence]]
+uses:: [[pages/concepts/FocusHistory]]
+uses:: [[pages/concepts/Reminder]]
+uses:: [[pages/concepts/os-notification]]
+supersedes:: [[pages/sources/2026-03-23-sync-devices-design]]
+updates:: [[pages/sources/2026-03-29-device-synchronizations-design]]
 
 ## Scope
 

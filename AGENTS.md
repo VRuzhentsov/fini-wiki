@@ -26,6 +26,7 @@ open are compatible with git and may be committed.
 ├── _hot.md            # active context cache for agent-first lookup
 ├── _index.md          # content catalog and navigation index
 ├── log.md             # chronological activity log (append-only)
+├── tools/             # dependency-free read-only wiki inspection helpers
 ├── raw/               # immutable source documents
 │   └── assets/        # images downloaded via Obsidian
 └── pages/             # LLM-owned wiki pages
@@ -68,6 +69,53 @@ Create additional subdirectories under `pages/` only when a category has
   claim with `> [!warning] Superseded by [[sources/new-source]] (YYYY-MM-DD)`
   and state the updated view below.
 
+## Claim lifecycle
+
+Prefer verifiable evidence labels over numeric confidence scores. Do not add
+floating-point confidence values; they imply precision the wiki cannot prove.
+
+Use these labels in frontmatter or the nearest section when a page contains
+durable claims:
+
+```yaml
+claim_status: locked | provisional | superseded | contradicted | historical
+evidence: source-backed | repo-inspected | user-locked | inferred
+```
+
+- `locked`: current operating truth backed by source citations, direct repo
+  inspection, or explicit user lock-in.
+- `provisional`: plausible but not yet fully evidenced; must include a nearby
+  `> [!question]` or open question.
+- `superseded`: historically useful but replaced by a newer source or decision.
+- `contradicted`: active conflict exists and the wiki should preserve both sides.
+- `historical`: retained for chronology, not current implementation guidance.
+
+Every durable claim should expose its evidence chain: cited source page, source
+date, current/old status, and any superseding or contradicting source.
+
+## Typed edges
+
+Ordinary wikilinks remain the default. Add typed markdown edges only when the
+relationship improves traversal, linting, or future query work. Keep them in the
+page body so Obsidian remains the primary interface.
+
+Use one edge per line:
+
+```markdown
+uses:: [[pages/concepts/SpaceSync]]
+depends_on:: [[pages/concepts/DeviceConnection]]
+supersedes:: [[pages/sources/2026-03-23-sync-devices-design]]
+contradicts:: [[pages/sources/example-source]]
+derived_from:: [[pages/sources/source-slug]]
+```
+
+Allowed edge names for now: `uses`, `depends_on`, `supersedes`, `contradicts`,
+`derived_from`, `updates`, `blocks`, `validates`.
+
+Do not create a separate graph database in this iteration. The markdown files
+remain the source of truth; helper tools may read typed edges but must not own
+them.
+
 ## Operations
 
 ### Ingest
@@ -105,6 +153,27 @@ User asks a question against the wiki.
    category and log it. Do not file automatically; ask first.
 7. If the wiki lacks evidence, say so explicitly rather than speculating.
 
+### Crystallize
+
+User explicitly asks to file a completed conversation, investigation, design
+thread, or analysis back into the wiki.
+
+1. Identify the durable outputs: decisions, corrected assumptions, reusable
+   facts, open questions, and follow-up source needs.
+2. Decide the storage shape:
+   - `pages/sources/<slug>.md` for transcript-like material or raw handoff notes.
+   - `pages/concepts/<slug>.md` for durable domain knowledge.
+   - `pages/concepts/<slug>.md` with `type: analysis` for synthesized arguments,
+     comparisons, or decision records.
+3. Ask the user before writing if the scope is ambiguous or if private material
+   may be included.
+4. Write only the distilled knowledge, not the full chat log, unless the user
+   provides the chat as a raw source.
+5. Update related concept/entity pages, `_index.md`, `_hot.md` if high-signal,
+   and `log.md`.
+6. Include sections for `What became durable`, `What changed`, and `Open
+   questions` when useful.
+
 ### Lint
 
 On request, health-check the wiki.
@@ -115,8 +184,35 @@ On request, health-check the wiki.
 - Concepts mentioned ≥3 times without a dedicated page.
 - Missing cross-references (A cites B but B has no backlink context).
 - Data gaps that warrant a web search or new source.
+- Missing or malformed frontmatter on wiki pages.
+- Broken wikilinks or typed-edge targets.
+- Claims marked current while their supporting text says superseded.
+- Durable claims that lack nearby source citations.
+- Stale `_hot.md` facts that should move into durable pages or be refreshed.
 
 Produce a prioritized report; apply fixes only after user confirms scope.
+
+### Read-only tooling
+
+Dependency-free JavaScript helper commands may inspect the wiki, but they must
+not modify files. They supplement `_index.md`; they do not replace the
+human-readable catalog.
+
+- `tools/wiki-check`: reports frontmatter issues, broken wikilinks, broken typed
+  edge targets, missing typed-edge targets, and stale `_hot.md` dates.
+- `tools/wiki-search <query>`: searches `_hot.md`, `_index.md`, `AGENTS.md`, and
+  `.agents/skills/**/SKILL.md` and `pages/**/*.md` with local keyword scoring.
+- `tools/wiki-edges <page-or-slug>`: prints typed edges on a page and inbound
+  typed edges from other pages.
+
+Tool output is evidence for a lint report, not permission to auto-fix.
+
+### Repo-local skill
+
+Agents that support `.agents` skills should use
+`.agents/skills/wiki-maintainer/SKILL.md` as the workflow entrypoint for this
+wiki. The skill is intentionally thin: it points back to this schema and the
+read-only JS helper tools rather than duplicating the full operating rules.
 
 ## _hot.md format
 

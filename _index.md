@@ -27,7 +27,7 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/concepts/capability-based-security]] — general pattern that Tauri's permission model resembles (1 source, inferred)
 - [[pages/concepts/webview-desktop-apps]] — bundled-engine vs platform-WebView trade-offs in desktop web apps (1 source)
 - [[pages/concepts/focus]] — computed Focus now includes virtual reminder-due timestamps for open-app preemption (4 sources)
-- [[pages/concepts/context-menu]] — responsive side-sheet context menu with app-window placement and bounded submenu behavior (1 source)
+- [[pages/concepts/context-menu]] — placement implemented locally; next pass is visual polish with inline accordion submenus and drag sheet (3 sources)
 - [[pages/concepts/DeviceConnection]] — pairing/discovery control plane; inline pairing consent distinct from SpaceSync consent (8 sources)
 - [[pages/concepts/SpaceSync]] — one-space receiver-side consent lifecycle with end/re-enable semantics for mapped spaces (8 sources)
 - [[pages/concepts/FocusHistory]] — owner-scoped event log; reminder-triggered rows are backdated by the main-process reconciler (4 sources)
@@ -42,6 +42,7 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/concepts/QuestOccurrence]] — generated actionable occurrence; History-only grouping and same-occurrence sync E2E are now tracked (4 sources)
 - [[pages/concepts/CLI]] — desired primary synchronous interface with `--json`, stable exit codes, and MCP parity targets (0 raw sources)
 - [[pages/concepts/settings-ui]] — Settings list primitives, row layout rules, token-first styling, and hidden UUID display policy (1 source)
+- [[pages/concepts/release-prep-screenshots]] — Play Store screenshot package validation skill, canonical asset matrix, and #22 follow-up (2 sources)
 
 ## E2E Specs
 - [[pages/e2e/README]] — QA execution policy: two-device topology, MCP-first interaction, state-first evidence, mandatory cleanup
@@ -55,6 +56,8 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 
 ## Tooling
 - [[pages/tooling/github-actions]] — PR required checks plus release workflow reference, tag policy, secrets, and procedure (2 sources)
+- `tools/wiki-check`, `tools/wiki-search`, `tools/wiki-edges` — dependency-free JS read-only wiki inspection helpers
+- `.agents/skills/wiki-maintainer/SKILL.md` — repo-local skill entrypoint for wiki query, ingest, lint, crystallize, search, and edge traversal
 
 ## Sources
 - [[pages/sources/2026-04-12-fini-current-data-layer]] — direct inspection of current Rust backend storage stack: Diesel, schema, models, services, and migration tests
@@ -90,6 +93,10 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/sources/2026-05-04-computed-focus-reminder-preemption]] — locks `Computed Due Wins` for open-app reminder-driven Focus preemption
 - [[pages/sources/2026-05-04-complete-button-single-click]] — drops hold-to-complete in the active Focus panel
 - [[pages/sources/2026-05-05-context-menu-responsive-side-sheet-grilling]] — redesigns context menus as responsive side-sheet surfaces
+- [[pages/sources/2026-05-10-context-menu-redesign-implementation-results]] — records local #21 implementation, validation gate, shared menu primitives, and skill-layout changes
+- [[pages/sources/2026-05-12-context-menu-component-design-handoff]] — design brief for context-menu polish: rich rows, inline accordions, scrim, drag sheet, and motion
+- [[pages/sources/2026-05-12-github-issue-22-release-prep-skill]] — creates issue #22 for validating and continuing Play Market screenshot prep skill work
+- [[pages/sources/2026-05-12-major-release-prep-screenshot-skill]] — scopes repo-local Play Store screenshot package workflow and validates 9 canonical screenshots
 
 ## Comparisons & Analyses
 - [[pages/concepts/device-sync-architecture]] — supersession chain from MVP.1 sync intent to archived `device_sync` to current split architecture (3 sources)

@@ -2,9 +2,9 @@
 title: Release GitOps
 type: concept
 created: 2026-04-12
-updated: 2026-04-12
-sources: [2026-03-23-release-gitops-setup, 2026-04-12-fini-current-github-actions]
-tags: [fini, release, gitops, github-actions, signing]
+updated: 2026-05-13
+sources: [2026-03-23-release-gitops-setup, 2026-04-12-fini-current-github-actions, 2026-05-12-major-release-prep-screenshot-skill]
+tags: [fini, release, gitops, github-actions, signing, play-store]
 ---
 
 # Release GitOps
@@ -12,6 +12,8 @@ tags: [fini, release, gitops, github-actions, signing]
 Fini's release flow is designed as a guarded GitOps pipeline rather than an ad hoc packaging step. The repo defines a manual prep workflow and a tag-triggered release workflow, both backed by the same quality gates and signing expectations [[sources/2026-03-23-release-gitops-setup]] [[sources/2026-04-12-fini-current-github-actions]].
 
 The current workflows confirm that the release plan has been implemented as a concrete GitHub Actions graph with reusable security scanning, preflight signing checks, Linux/Windows/Android fan-out, Docker publishing, and gated final publication [[sources/2026-04-12-fini-current-github-actions]].
+
+Marketplace screenshot prep is now tracked separately from the release pipeline. The Play Store screenshot skill validates canonical marketplace assets under `docs/play-store/screenshots/`, while GitOps release workflows remain responsible for package build/sign/publish [[sources/2026-05-12-major-release-prep-screenshot-skill]]. See [[release-prep-screenshots]].
 
 ## Release shape
 

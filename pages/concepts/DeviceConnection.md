@@ -5,11 +5,18 @@ created: 2026-04-12
 updated: 2026-05-04
 sources: [2026-03-29-device-synchronizations-design, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-05-02-device-settings-last-synced-date-time, 2026-05-03-settings-list-device-identity-grilling, 2026-05-04-space-sync-consent-and-lifecycle, 2026-05-04-space-sync-implementation-and-e2e-results]
 tags: [fini, sync, pairing, discovery, device-connection, mdns, dns-sd, settings, consent]
+claim_status: locked
+evidence: source-backed
 ---
 
 # DeviceConnection
 
 LAN discovery, presence, and pairing control-plane behavior for Fini [[sources/2026-03-29-device-synchronizations-design]].
+
+uses:: [[pages/concepts/SpaceSync]]
+uses:: [[pages/concepts/settings-ui]]
+depends_on:: [[pages/concepts/Network]]
+updates:: [[pages/sources/2026-03-29-device-synchronizations-design]]
 
 ## Authority split
 

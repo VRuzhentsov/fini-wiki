@@ -5,11 +5,21 @@ created: 2026-04-12
 updated: 2026-04-12
 sources: [2026-03-23-sync-devices-design, 2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline]
 tags: [fini, sync, architecture, superseded, device-connection, space-sync]
+claim_status: locked
+evidence: source-backed
 ---
 
 # Device Sync Architecture
 
 The sync docs show a clear supersession chain. The MVP baseline establishes that pairing and selected-space sync belong to MVP.1 [[sources/2026-03-21-mvp-baseline]]. The 2026-03-23 snapshot preserves the older single `device_sync` framing [[sources/2026-03-23-sync-devices-design]]. The 2026-03-29 lock replaces that with a two-plane design: `device_connection` for discovery and pairing, `space_sync` for replication, plus `focus_history` for owner-scoped focus metadata [[sources/2026-03-29-device-synchronizations-design]].
+
+depends_on:: [[pages/concepts/DeviceConnection]]
+depends_on:: [[pages/concepts/SpaceSync]]
+uses:: [[pages/concepts/focus]]
+uses:: [[pages/concepts/FocusHistory]]
+supersedes:: [[pages/sources/2026-03-23-sync-devices-design]]
+derived_from:: [[pages/sources/2026-03-21-mvp-baseline]]
+derived_from:: [[pages/sources/2026-03-29-device-synchronizations-design]]
 
 ## What changed
 

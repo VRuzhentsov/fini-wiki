@@ -146,3 +146,18 @@ Append-only chronological record. Parseable: `grep "^## \[" log.md | tail -10`.
 
 - Pages touched: [[pages/sources/2026-05-04-computed-focus-reminder-preemption]], [[pages/sources/2026-05-04-complete-button-single-click]], [[pages/sources/2026-05-05-context-menu-responsive-side-sheet-grilling]], [[pages/concepts/focus]], [[pages/concepts/FocusHistory]], [[pages/concepts/Reminder]], [[pages/concepts/focus-view-daisyui-redesign]], [[pages/concepts/context-menu]], `_index.md`, `_hot.md`, `log.md`
 - Notes: Ingested three newest raw docs. Captured `Computed Due Wins` for open-app reminder-driven Focus preemption, corrected hot-cache/design language to reflect single-click Complete, and documented responsive side-sheet context-menu placement rules for narrow and quarter-screen windows.
+
+## [2026-05-13] schema | Conservative wiki v2 tooling and lifecycle plan
+
+- Pages touched: `AGENTS.md`, `_index.md`, `_hot.md`, `tools/wiki-tool.js`, `tools/wiki-check`, `tools/wiki-search`, `tools/wiki-edges`, [[pages/concepts/SpaceSync]], [[pages/concepts/DeviceConnection]], [[pages/concepts/device-sync-architecture]]
+- Notes: Added evidence-label claim lifecycle, typed markdown edges, human-gated crystallization, stricter lint guidance, and dependency-free JS read-only inspection helpers. Piloted `claim_status`, `evidence`, and typed edges on the sync architecture pages.
+
+## [2026-05-13] schema | Repo-local wiki maintainer skill
+
+- Pages touched: `.agents/skills/wiki-maintainer/SKILL.md`, `AGENTS.md`, `_index.md`, `log.md`
+- Notes: Added a thin repo-local `.agents` skill that routes future agents through `AGENTS.md`, `_hot.md`, `_index.md`, and the JS wiki helper commands for query, ingest, lint, crystallize, search, and typed-edge traversal. Extended `tools/wiki-search` to include `.agents/skills/**/SKILL.md`.
+
+## [2026-05-13] ingest | Context menu and release-prep docs
+
+- Pages touched: [[pages/sources/2026-05-10-context-menu-redesign-implementation-results]], [[pages/sources/2026-05-12-context-menu-component-design-handoff]], [[pages/sources/2026-05-12-github-issue-22-release-prep-skill]], [[pages/sources/2026-05-12-major-release-prep-screenshot-skill]], [[pages/concepts/context-menu]], [[pages/concepts/release-prep-screenshots]], [[pages/concepts/release-gitops]], `_hot.md`, `_index.md`
+- Notes: Ingested latest raw docs. Preserved #21 as implemented but user-gated, recorded the newer context-menu polish direction, and added the Play Store screenshot release-prep skill thread plus issue #22 validation follow-up.

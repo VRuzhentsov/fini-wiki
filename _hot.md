@@ -1,6 +1,6 @@
 # Hot Cache
 
-Updated: 2026-05-05
+Updated: 2026-05-13
 
 ## Current Fini Architecture
 
@@ -38,9 +38,12 @@ Updated: 2026-05-05
 - Focus now treats active reminder due timestamps as virtual focus events. Once due, a reminder quest can become Focus even while the app is already open; this no longer depends on a reconciler-written `focus_history` row.
 - Active Focus `Complete` is now intended to be single-click, not hold-to-complete.
 - Context menus should behave as responsive side-sheet surfaces with app-window-based sizing and second-half/overlay submenu placement, not raw cursor popups.
+- Context menu #21 placement implementation exists locally but was not pushed or user-validated; the next design pass supersedes flyout/overlay submenus with inline accordion pickers, richer row states, scrim, drag bottom sheet, and reduced-motion-aware motion.
+- Release-prep skill work now centers on Play Store screenshot package validation under `docs/play-store/screenshots/`; `make play-store-screenshots` validated 9 existing canonical screenshots and wrote a manifest, but fresh runtime capture/composition remains future work.
 
 ## Active Wiki Threads
 
+- Wiki v2 iteration is conservative-plus-tooling: evidence labels instead of numeric confidence, typed markdown edges instead of graph DB, human-gated crystallization, and dependency-free read-only helper commands.
 - [[diesel-orm]] — architecture role of Diesel in Fini's current backend.
 - [[Quest]] — string ids, default `space_id`, and Diesel-backed persistence semantics.
 - [[Space]] — built-in string space ids and delete-to-Personal reassignment.
@@ -55,6 +58,7 @@ Updated: 2026-05-05
 - [[github-actions-pipelines]] — includes split E2E CI phase guidance plus backend compile/test cache split.
 - [[settings-ui]] — locked Settings row primitive/layout rules and token-first styling constraints.
 - [[context-menu]] — responsive side-sheet placement rules for context menus and submenus.
+- [[release-prep-screenshots]] — repo-local Play Store screenshot prep skill, canonical asset matrix, validation status, and #22 follow-up.
 - [[os-notification]] — current Android notification pipeline mostly exists; Android 13+ permission bridge is still missing.
 
 ## Current Design Thread
