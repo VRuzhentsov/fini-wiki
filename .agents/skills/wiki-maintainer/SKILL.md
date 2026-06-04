@@ -44,6 +44,16 @@ Answer from `_hot.md`, `_index.md`, targeted pages, and source citations. If the
 
 Follow the `AGENTS.md` ingest operation. Raw files are immutable. Discuss 3-5 takeaways with the user before writing wiki pages unless the user has already supplied the takeaways and asked to execute.
 
+After writing the ingest, validate and preserve the work when the user asks to persist it:
+
+1. Run `tools/wiki-check` and report whether any findings are new or pre-existing baseline issues.
+2. Inspect `git status --short`, `git diff --stat`, and recent `git log --oneline -10` before committing.
+3. Stage only the intended ingest files: `_hot.md`, `_index.md`, `log.md`, generated/updated `pages/**`, corresponding new `raw/**` source files, and deliberate skill/schema updates.
+4. Leave unrelated local files unstaged, especially `.obsidian/workspace.json`, scratch notes, local config such as `opencode.json`, and any user changes outside the ingest scope.
+5. Re-check staged content with `git status --short` and `git diff --staged --stat` before committing.
+6. Commit with a concise `docs:` message that describes the ingest.
+7. Push the current branch to its upstream when the user explicitly asks to push, then report the commit hash and push result.
+
 ### Lint
 
 Run `tools/wiki-check` first. Summarize findings by priority and cite the exact reported file paths. Apply fixes only after the user confirms the lint-fix scope.

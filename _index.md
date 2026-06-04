@@ -26,23 +26,28 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/concepts/tauri-distribution]] — official guidance for five distribution channels in 2.0 (1 source)
 - [[pages/concepts/capability-based-security]] — general pattern that Tauri's permission model resembles (1 source, inferred)
 - [[pages/concepts/webview-desktop-apps]] — bundled-engine vs platform-WebView trade-offs in desktop web apps (1 source)
-- [[pages/concepts/focus]] — computed Focus now includes virtual reminder-due timestamps for open-app preemption (4 sources)
-- [[pages/concepts/context-menu]] — placement implemented locally; next pass is visual polish with inline accordion submenus and drag sheet (3 sources)
-- [[pages/concepts/DeviceConnection]] — pairing/discovery control plane; inline pairing consent distinct from SpaceSync consent (8 sources)
-- [[pages/concepts/SpaceSync]] — one-space receiver-side consent lifecycle with end/re-enable semantics for mapped spaces (8 sources)
+- [[pages/concepts/focus]] — computed Focus includes virtual reminder-due timestamps plus shipped `focus_enter_count` attention signal (6 sources)
+- [[pages/concepts/context-menu]] — polished accordion/drag menu with newer cursor-anchored wide placement replacing zone placement (5 sources)
+- [[pages/concepts/DeviceConnection]] — pairing/discovery control plane plus planned Bluetooth fallback transport for issue #25 (10 sources)
+- [[pages/concepts/SpaceSync]] — one-space consent lifecycle; sync protocol should stay transport-agnostic for Bluetooth fallback (9 sources)
 - [[pages/concepts/FocusHistory]] — owner-scoped event log; reminder-triggered rows are backdated by the main-process reconciler (4 sources)
-- [[pages/concepts/mcp-contract]] — MCP evolution from string-id migration to structured JSON outputs (3 sources)
+- [[pages/concepts/mcp-contract]] — historical product MCP contract; superseded by CLI as supported automation surface (6 sources)
 - [[pages/concepts/release-gitops]] — signed-tag GitHub Actions release pipeline with keyless cosign and GHCR publishing (2 sources)
-- [[pages/concepts/github-actions-pipelines]] — PR quality gates, release workflows, split E2E phases, backend compile/test cache split (4 sources)
-- [[pages/concepts/e2e-testing]] — multi-actor E2E plus one-space sync proof; follow-up ticket covers same-occurrence completion sync (9 sources)
-- [[pages/concepts/os-notification]] — platform surface that delivers reminders; Android 13+ permission bridge still missing in current debug builds (3 sources)
-- [[pages/concepts/Reminder]] — derived local reminder row managed from quest due fields; Android permission gap is now explicit (5 sources)
-- [[pages/concepts/Quest]] — core actionable record; due fields now drive reminder scheduling through backend bridge logic (4 sources)
+- [[pages/concepts/github-actions-pipelines]] — PR/release pipelines plus runner-owned E2E and v0.1.30 release result (6 sources)
+- [[pages/concepts/e2e-testing]] — runner-owned multi-actor E2E plus SpaceSync/occurrence/Bluetooth proof requirements (14 sources)
+- [[pages/concepts/os-notification]] — platform reminder surface; Linux KDE popup, action, and sound behavior now verified (5 sources)
+- [[pages/concepts/Reminder]] — derived local reminder row; Linux Snooze implementation now creates a new reminder row (8 sources)
+- [[pages/concepts/Quest]] — core actionable record; now includes `focus_enter_count` attention-history signal (5 sources)
 - [[pages/concepts/QuestSeries]] — repeating template record; active-list grouping stays unchanged while History-only grouping is ticketed (3 sources)
-- [[pages/concepts/QuestOccurrence]] — generated actionable occurrence; History-only grouping and same-occurrence sync E2E are now tracked (4 sources)
-- [[pages/concepts/CLI]] — desired primary synchronous interface with `--json`, stable exit codes, and MCP parity targets (0 raw sources)
-- [[pages/concepts/settings-ui]] — Settings list primitives, row layout rules, token-first styling, and hidden UUID display policy (1 source)
+- [[pages/concepts/QuestOccurrence]] — generated actionable occurrence; History grouping now uses QuestList group rows with mixed status (6 sources)
+- [[pages/concepts/CLI]] — supported user-facing automation surface after product MCP removal; CLI-only `fini` binary (7 sources)
+- [[pages/concepts/settings-ui]] — Settings rows plus backup/search overview contracts, shared mapping dialog, and Memory toggle (5 sources)
 - [[pages/concepts/release-prep-screenshots]] — Play Store screenshot package validation skill, canonical asset matrix, and #22 follow-up (2 sources)
+- [[pages/concepts/history-grouping]] — History-only grouping contract for resolved same-series occurrences, including corrective implementation status (4 sources)
+- [[pages/concepts/backup-import-export]] — portable zip backup format; PR #36 bumps version for `focus_enter_count` (3 sources)
+- [[pages/concepts/repo-wiki-doc-policy]] — boundary: implementation contracts in `../fini/specs`, rationale/history in `fini-wiki` (1 source)
+- [[pages/concepts/memory]] — optional reflective Memory page/tab for graph/search over resolved quest history (2 sources)
+- [[pages/concepts/quest-memory-search]] — qmd/Markdown/SQLite FTS research thread for local quest memory search (2 sources)
 
 ## E2E Specs
 - [[pages/e2e/README]] — QA execution policy: two-device topology, MCP-first interaction, state-first evidence, mandatory cleanup
@@ -83,6 +88,7 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/sources/2026-04-26-reusable-synced-devices-e2e-precondition]] — defines `ensureSyncedActors(...)` as reusable precondition for paired, sync-ready 2+ actors
 - [[pages/sources/2026-04-27-split-e2e-ci-workflow-steps]] — splits opaque E2E CI into named Makefile-backed phases for debuggability
 - [[pages/sources/2026-04-27-ci-quality-gates-cache-split]] — locks PR CI checks and splits backend compile/test gates for Docker/GHCR cache reuse
+- [[pages/sources/2026-04-27-repo-wiki-doc-split]] — locks the boundary between main-repo specs and wiki rationale/history docs
 - [[pages/sources/2026-05-02-device-settings-last-synced-date-time]] — Settings device detail now shows mapped-space last synced as locale date+time
 - [[pages/sources/2026-05-03-settings-list-device-identity-grilling]] — locks Settings row primitives and separates device labels from UUID identity
 - [[pages/sources/2026-05-04-space-sync-consent-and-lifecycle]] — locks one-space receiver-side SpaceSync consent and end/re-enable lifecycle semantics
@@ -97,6 +103,31 @@ Content catalog. See `AGENTS.md` for conventions. Updated on every ingest.
 - [[pages/sources/2026-05-12-context-menu-component-design-handoff]] — design brief for context-menu polish: rich rows, inline accordions, scrim, drag sheet, and motion
 - [[pages/sources/2026-05-12-github-issue-22-release-prep-skill]] — creates issue #22 for validating and continuing Play Market screenshot prep skill work
 - [[pages/sources/2026-05-12-major-release-prep-screenshot-skill]] — scopes repo-local Play Store screenshot package workflow and validates 9 canonical screenshots
+- [[pages/sources/2026-05-14-context-menu-polish-pass-implementation]] — implements PR #23 context-menu row polish, accordion submenus, drag sheet, and motion
+- [[pages/sources/2026-05-14-context-menu-cursor-anchored-placement]] — supersedes zone/corner placement with cursor/trigger anchoring for wide context menus
+- [[pages/sources/2026-05-14-history-grouping-implementation-results]] — records first issue #20 History grouping implementation, later superseded by corrective review
+- [[pages/sources/2026-05-15-history-grouping-discussion]] — locks corrective History grouping decisions: QuestList reuse, no count badge, mixed pill, delete-series semantics
+- [[pages/sources/2026-05-16-history-grouping-corrective-revision-results]] — records corrective History grouping implementation and remaining E2E gap
+- [[pages/sources/2026-05-16-bluetooth-transport-ticket-grilling]] — locks Bluetooth as explicit Android+Linux fallback transport without changing Fini trust semantics
+- [[pages/sources/2026-05-16-bluetooth-transport-github-issue]] — records GitHub issue #25 tracker handoff for Bluetooth transport
+- [[pages/sources/2026-05-17-os-notifications-linux-debug-and-fixes]] — records Linux KDE popup fixes: desktop-entry hint, dev desktop file, and fire_immediate guard removal
+- [[pages/sources/2026-05-17-os-notifications-linux-sound-and-action-verification]] — verifies Linux Complete/Snooze actions and direct paplay sound workaround
+- [[pages/sources/2026-05-19-issue-28-backup-import-export]] — locks issue #28 portable backup format, Settings/CLI flow, mapping, and conflict contract
+- [[pages/sources/2026-05-20-issue-28-backup-design-implementation]] — records refined backup frontend implementation, tests, and remaining visual/device validation
+- [[pages/sources/2026-05-21-search-in-settings-ticket]] — scopes first Settings search to client-side in-place filtering of visible overview rows
+- [[pages/sources/2026-05-22-focus-entry-count-priority-signal]] — ticket/design brief for discrete Focus-entry count as warm attention signal
+- [[pages/sources/2026-05-23-memory-graph-page-ticket]] — splits Memory graph UI into separate optional reflective product surface
+- [[pages/sources/2026-05-23-qmd-markdown-quest-memory-research-ticket]] — researches qmd, Markdown projections, SQLite FTS, and vector search for quest memory
+- [[pages/sources/2026-05-23-memory-qmd-feature-flag-addendum]] — makes qmd primary research candidate and Memory disableable from Settings
+- [[pages/sources/2026-05-27-fini-exposed-mcp-cleanup-ticket]] — cleanup ticket for removing exposed product MCP while preserving devtools/runtime control
+- [[pages/sources/2026-05-27-runner-owned-multi-actor-e2e-plan]] — plan superseding prestarted actor containers with runner-owned `fini-app` actors
+- [[pages/sources/2026-05-28-cli-pairing-follow-up]] — follow-up ticket for live device pairing from CLI
+- [[pages/sources/2026-05-28-feature-plane-devtools-boundary]] — locks shared core vs UI-plane adapters vs devtools test-control boundary
+- [[pages/sources/2026-05-28-mcp-surface-decision]] — abandons product MCP, keeps devtools control separate, and makes CLI supported automation
+- [[pages/sources/2026-05-28-runner-owned-e2e-implementation-result]] — records runner-owned E2E implementation and local pre-release evidence
+- [[pages/sources/2026-05-29-pr-41-feature-plane-mcp-release-handoff]] — PR #41 merge handoff for feature-plane, MCP removal, and release constraint
+- [[pages/sources/2026-05-29-v0-1-30-release-result]] — records successful v0.1.30 release from latest main
+- [[pages/sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]] — records shipped `focus_enter_count` behavior from PR #36
 
 ## Comparisons & Analyses
 - [[pages/concepts/device-sync-architecture]] — supersession chain from MVP.1 sync intent to archived `device_sync` to current split architecture (3 sources)

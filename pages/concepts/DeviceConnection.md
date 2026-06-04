@@ -2,9 +2,9 @@
 title: DeviceConnection
 type: concept
 created: 2026-04-12
-updated: 2026-05-04
-sources: [2026-03-29-device-synchronizations-design, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-05-02-device-settings-last-synced-date-time, 2026-05-03-settings-list-device-identity-grilling, 2026-05-04-space-sync-consent-and-lifecycle, 2026-05-04-space-sync-implementation-and-e2e-results]
-tags: [fini, sync, pairing, discovery, device-connection, mdns, dns-sd, settings, consent]
+updated: 2026-05-21
+sources: [2026-03-29-device-synchronizations-design, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-04-26-headed-local-e2e-main-use-case, 2026-04-26-reusable-synced-devices-e2e-precondition, 2026-05-02-device-settings-last-synced-date-time, 2026-05-03-settings-list-device-identity-grilling, 2026-05-04-space-sync-consent-and-lifecycle, 2026-05-04-space-sync-implementation-and-e2e-results, 2026-05-16-bluetooth-transport-ticket-grilling, 2026-05-16-bluetooth-transport-github-issue]
+tags: [fini, sync, pairing, discovery, device-connection, mdns, dns-sd, settings, consent, bluetooth]
 claim_status: locked
 evidence: source-backed
 ---
@@ -17,6 +17,7 @@ uses:: [[pages/concepts/SpaceSync]]
 uses:: [[pages/concepts/settings-ui]]
 depends_on:: [[pages/concepts/Network]]
 updates:: [[pages/sources/2026-03-29-device-synchronizations-design]]
+updates:: [[pages/sources/2026-05-16-bluetooth-transport-ticket-grilling]]
 
 ## Authority split
 
@@ -172,6 +173,22 @@ The newer transport split is mDNS/DNS-SD for discovery and WebSocket for peer-sp
 - Pairing messages use the resolved WebSocket endpoint.
 - Sync continues over WebSocket and still requires paired/trusted device records.
 - Temporary port sharding (`FINI_DISCOVERY_PEER_PORTS`) should go away after mDNS endpoint resolution works.
+
+## Bluetooth transport plan
+
+GitHub issue `VRuzhentsov/fini#25` tracks adding Bluetooth transport for DeviceConnection and SpaceSync [[sources/2026-05-16-bluetooth-transport-github-issue]]. Bluetooth is planned as an independent transport provider beside network, not a replacement for Fini pairing or SpaceSync consent [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+
+- Transport types are `network transport` and `Bluetooth transport` [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+- Bluetooth can carry initial Fini app pairing only if devices are already paired at the OS Bluetooth layer [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+- OS Bluetooth pairing is only a transport precondition; it never grants Fini trust or sync authorization [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+- Bluetooth is enabled explicitly per Fini-paired device relationship [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+- Network remains preferred when both transports are available; Bluetooth is fallback when network is unavailable or fails [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+- Bluetooth carries the same authenticated pairing/control/sync protocol semantics as the network path [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+- Device detail should expose independent Network and Bluetooth transport status rows [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+- First implementation scope is Android + Linux; macOS/Windows Bluetooth is deferred [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+
+> [!question]
+> Open execution choices remain: network-recovery session handoff after Bluetooth fallback, Linux Bluetooth stack/API, Android Bluetooth permission flow, and whether real Bluetooth E2E can run in CI or requires a device-lab/manual target [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
 
 ## Security policy (connection layer)
 

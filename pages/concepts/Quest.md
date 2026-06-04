@@ -2,9 +2,11 @@
 title: Quest
 type: concept
 created: 2026-04-12
-updated: 2026-04-26
-sources: [2026-03-21-mvp-baseline, 2026-03-22-mcp-contract-baseline, 2026-04-12-fini-current-data-layer, 2026-04-24-reminder-due-bridge-grilling]
+updated: 2026-06-03
+sources: [2026-03-21-mvp-baseline, 2026-03-22-mcp-contract-baseline, 2026-04-12-fini-current-data-layer, 2026-04-24-reminder-due-bridge-grilling, 2026-06-03-pr-36-focus-enter-count-product-and-design-result]
 tags: [fini, quest, focus, repeats, mcp, diesel]
+claim_status: locked
+evidence: source-backed
 ---
 
 # Quest
@@ -35,6 +37,9 @@ The live backend confirms that this is not just a design target: Diesel models a
 | `completed_at` | datetime \| null | null | Set on completion |
 | `created_at` | datetime | — | Creation timestamp |
 | `updated_at` | datetime | — | Last update timestamp |
+| `focus_enter_count` | integer | `0` | Persisted attention-history signal counting quest entries into Focus |
+
+`focus_enter_count` is stored on the quest itself because the signal describes quest attention history rather than a separate analytics event stream [[sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]].
 
 ## Status
 
@@ -43,8 +48,8 @@ Status remains the main split between backlog-eligible quests and history entrie
 | Value | Kind | Meaning |
 |---|---|---|
 | `active` | state | In backlog and eligible to become Focus |
-| `completed` | terminal status | Done, shown in [[HistoryView]] |
-| `abandoned` | terminal status | Intentionally dropped, shown in [[HistoryView]] |
+| `completed` | terminal status | Done, shown in History |
+| `abandoned` | terminal status | Intentionally dropped, shown in History |
 
 ## Focus quest selection
 
@@ -55,9 +60,15 @@ Focus quest is computed by getter from quest data/events, not from a separate mu
 ### Override signals
 
 - Manual and reminder override events are written to [[FocusHistory]].
-- Focus metadata is owner-scoped and does not live in quest rows.
+- Historical Focus override metadata is owner-scoped and lives in [[FocusHistory]], but `focus_enter_count` now lives on the quest row as a lightweight attention signal [[sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]].
 
 For active quests, latest override timestamp wins. Reminder overrides are temporary preemption; when reminder-driven quest resolves, next most recent valid override is used [[sources/2026-03-21-mvp-baseline]].
+
+### Focus entry count
+
+- The count increments when a quest enters Focus through app UI, reminder handling, or CLI-driven Focus commands [[sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]].
+- The active Focus panel surfaces repeat-Focus state only when `focus_enter_count > 1` [[sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]].
+- Normal quest sync payloads preserve the field, but count-only cross-device convergence is deferred [[sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]].
 
 ### Fallback order
 

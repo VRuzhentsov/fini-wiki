@@ -10,7 +10,7 @@ Validate that CLI commands are the primary synchronous control surface for produ
 
 - `fini` returns current Focus quest.
 - `fini --help` shows command groups and usage.
-- `fini app` launches GUI explicitly.
+- `fini` does not launch GUI; desktop GUI tests use `fini-app`.
 
 ## Ideal CLI Contract
 

@@ -2,9 +2,9 @@
 title: Reminder
 type: concept
 created: 2026-04-12
-updated: 2026-05-05
-sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-android-notification-debug-build, 2026-05-04-computed-focus-reminder-preemption]
-tags: [fini, reminders, notifications, focus]
+updated: 2026-05-21
+sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-android-notification-debug-build, 2026-05-04-computed-focus-reminder-preemption, 2026-05-17-os-notifications-linux-debug-and-fixes, 2026-05-17-os-notifications-linux-sound-and-action-verification]
+tags: [fini, reminders, notifications, focus, linux]
 ---
 
 # Reminder
@@ -94,13 +94,17 @@ Reminder due timestamps can temporarily preempt Focus, but suppressed reminders 
 
 ## Snooze
 
-Snooze is **notification-level**, not reminder-level [[sources/2026-04-21-notifications-grilling]]:
+Snooze was originally designed as **notification-level**, not reminder-level [[sources/2026-04-21-notifications-grilling]], but the Linux implementation verification shows the current code creates a new reminder row for Snooze 30m while retaining the original [[sources/2026-05-17-os-notifications-linux-sound-and-action-verification]].
 
 - Action-button presets on the notification: **Snooze 30m**, **Snooze 1d** (plus **Complete**).
-- OS reschedules a re-notification for the same reminder row.
-- **No new reminder row.** **No [[FocusHistory]] event** at snooze time.
+- Current verified Linux behavior: Snooze 30m creates a new reminder row with `due_at_utc = now + 30m` and keeps the original reminder row [[sources/2026-05-17-os-notifications-linux-sound-and-action-verification]].
+- Re-arming the snoozed reminder on next launch was not explicitly re-tested in the verification session [[sources/2026-05-17-os-notifications-linux-sound-and-action-verification]].
+- **No [[FocusHistory]] event** at snooze time remains the older design intent; no newer source contradicted it.
 - **No cross-device replication** — snooze is per-device.
 - Snooze does not alter `quest.due`, `quest.due_time`, or the series cadence.
+
+> [!warning] Superseded by implementation verification [[sources/2026-05-17-os-notifications-linux-sound-and-action-verification]] (2026-05-17)
+> The previous wiki claim said Snooze creates no new reminder row. Current Linux evidence says Snooze 30m creates a new reminder row and retains the original.
 
 ## Permissions
 

@@ -2,9 +2,9 @@
 title: SpaceSync
 type: concept
 created: 2026-04-12
-updated: 2026-05-04
-sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-05-02-device-settings-last-synced-date-time, 2026-05-04-space-sync-consent-and-lifecycle, 2026-05-04-space-sync-implementation-and-e2e-results]
-tags: [fini, sync, replication, spaces, websocket, consent, lifecycle]
+updated: 2026-05-21
+sources: [2026-03-29-device-synchronizations-design, 2026-03-21-mvp-baseline, 2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-04-26-mdns-sd-device-discovery-architecture, 2026-05-02-device-settings-last-synced-date-time, 2026-05-04-space-sync-consent-and-lifecycle, 2026-05-04-space-sync-implementation-and-e2e-results, 2026-05-16-bluetooth-transport-ticket-grilling]
+tags: [fini, sync, replication, spaces, websocket, consent, lifecycle, bluetooth]
 claim_status: locked
 evidence: source-backed
 ---
@@ -21,6 +21,7 @@ uses:: [[pages/concepts/Reminder]]
 uses:: [[pages/concepts/os-notification]]
 supersedes:: [[pages/sources/2026-03-23-sync-devices-design]]
 updates:: [[pages/sources/2026-03-29-device-synchronizations-design]]
+updates:: [[pages/sources/2026-05-16-bluetooth-transport-ticket-grilling]]
 
 ## Scope
 
@@ -106,6 +107,19 @@ WebSocket remains the sync transport and uses one canonical session per pair, bu
 
 > [!warning] Supersedes beacon-sourced endpoint
 > The earlier fixed websocket port advertised by custom `device_connection` beacons is replaced by DNS-SD service resolution. Sync still only trusts paired-device records; mDNS itself is not authorization.
+
+### Bluetooth transport extension
+
+The Bluetooth plan moves SpaceSync toward transport-agnostic protocol semantics: the same authenticated sync protocol should run above network or Bluetooth providers [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+
+- Bluetooth can carry SpaceSync traffic only for an existing Fini-paired relationship with pair-auth [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+- Network is preferred; Bluetooth is fallback when network is unavailable or fails [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+- SpaceSync consent remains peer-and-space scoped, not transport-scoped [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+- Changing transport from network to Bluetooth must not re-prompt for already approved spaces [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+- Bluetooth fallback must not duplicate or lose sync events [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
+
+> [!question]
+> Network-recovery handoff after Bluetooth fallback is still unresolved: implementation must define and test whether to switch back immediately, continue current session until reconnect, or use another deterministic handoff rule [[sources/2026-05-16-bluetooth-transport-ticket-grilling]].
 
 ## Replication model
 

@@ -2,9 +2,11 @@
 title: Focus
 type: concept
 created: 2026-04-12
-updated: 2026-05-05
-sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling, 2026-05-04-computed-focus-reminder-preemption]
+updated: 2026-06-03
+sources: [2026-03-21-mvp-baseline, 2026-03-29-device-synchronizations-design, 2026-04-21-notifications-grilling, 2026-05-04-computed-focus-reminder-preemption, 2026-05-22-focus-entry-count-priority-signal, 2026-06-03-pr-36-focus-enter-count-product-and-design-result]
 tags: [quest, focus, resolver]
+claim_status: locked
+evidence: source-backed
 ---
 
 # Focus
@@ -59,14 +61,26 @@ Applied when no FocusHistory event resolves to an active quest:
 - Restoring a quest from history appends a [[FocusHistory]] event with `trigger = restore`.
 - Restored quest becomes Focus immediately (latest event wins).
 
+## Focus entry count
+
+Fini now records a `focus_enter_count` on each quest as a persisted attention-history signal [[sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]].
+
+- The count increases when a quest enters Focus, including app UI, reminder handling, and CLI-driven Focus commands [[sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]].
+- The signal describes repeated attention to the quest; it is not a new analytics event stream or prioritization engine [[sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]].
+- The active quest panel surfaces repeat-Focus state only when `focus_enter_count > 1`, keeping first-time Focus visually quiet [[sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]].
+- The count is preserved in ordinary quest sync payloads, but count-only cross-device convergence is deliberately deferred [[sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]].
+
+> [!warning] Superseded by [[sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]] (2026-06-03)
+> The earlier focus-entry-count ticket proposed possible event/aggregate implementation shapes because virtual reminder Focus is not always backed by `focus_history`. The shipped PR stores `focus_enter_count` directly on the quest [[sources/2026-05-22-focus-entry-count-priority-signal]].
+
 ## Replication
 
-Focus is owner-scoped metadata. Full replication rules live in [[FocusHistory]] and [[space-sync]]; summary:
+Focus is owner-scoped metadata. Full replication rules live in [[FocusHistory]] and [[SpaceSync]]; summary:
 
 - Replicate focus events only between peers that map `Personal` (`space_id = "1"`).
 - Replicate only events whose target quest's `space_id` is currently mapped for the pair.
 
-## MCP surface
+## Automation surface
 
-- `get_active_focus` → QuestRecord or null (see [[mcp-contract]]).
-- Legacy name `get_active_quest` is hard-retired.
+- Product/exposed MCP is abandoned; CLI is the supported automation surface [[sources/2026-05-28-mcp-surface-decision]] [[sources/2026-05-29-pr-41-feature-plane-mcp-release-handoff]].
+- Legacy MCP naming such as `get_active_quest` remains historical only.

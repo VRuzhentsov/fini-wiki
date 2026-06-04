@@ -2,9 +2,11 @@
 title: GitHub Actions Pipelines
 type: concept
 created: 2026-04-12
-updated: 2026-04-27
-sources: [2026-04-12-fini-current-github-actions, 2026-03-23-release-gitops-setup, 2026-04-27-split-e2e-ci-workflow-steps, 2026-04-27-ci-quality-gates-cache-split]
+updated: 2026-06-03
+sources: [2026-04-12-fini-current-github-actions, 2026-03-23-release-gitops-setup, 2026-04-27-split-e2e-ci-workflow-steps, 2026-04-27-ci-quality-gates-cache-split, 2026-05-28-runner-owned-e2e-implementation-result, 2026-05-29-v0-1-30-release-result]
 tags: [fini, github-actions, ci, release, pipeline, e2e]
+claim_status: locked
+evidence: source-backed
 ---
 
 # GitHub Actions Pipelines
@@ -84,9 +86,20 @@ The E2E job should avoid hiding the entire multi-actor flow behind one opaque Gi
 
 This is a CI observability improvement. The current aggregate E2E flow was already green on PR #18, so the source frames this as debuggability rather than topology change [[sources/2026-04-27-split-e2e-ci-workflow-steps]].
 
+> [!warning] Superseded by [[sources/2026-05-28-runner-owned-e2e-implementation-result]] (2026-05-28)
+> The old image/network/start-actor phase list assumed prestarted actor containers. Current CI E2E uses a runner image whose Playwright fixtures spawn real `fini-app` actor processes; the old `e2e-actor` target is a compatibility alias.
+
+Runner-owned E2E evidence from the implementation result: `make pre-release-check` passed locally, full containerized E2E passed `29 passed (1.4m)`, frontend unit tests passed `48 passed`, Rust tests passed `64 passed`, CLI E2E passed `8 passed`, and `git diff --check` passed [[sources/2026-05-28-runner-owned-e2e-implementation-result]].
+
 Open follow-ups: whether release dry-run/tag workflows should also move from Dockerfile `test` stage to split Makefile targets, and whether Playwright traces/test results should be uploaded as artifacts on E2E failure [[sources/2026-04-27-split-e2e-ci-workflow-steps]].
 
 Additional backend-cache follow-ups: whether `BE Compile` and `BE Unit Tests` should share one GHCR cache image long-term, and whether release artifact jobs should adopt the same Dockerfile/Makefile cache strategy or keep platform-native setup for bundle production [[sources/2026-04-27-ci-quality-gates-cache-split]].
+
+## v0.1.30 release workflow result
+
+Release `v0.1.30` validated the tag-driven release workflow after PR #41 merged. The workflow completed successfully and published a stable release, with jobs succeeding for tag validation, Snyk, signing readiness, quality gates, Linux x64/arm64, Windows x64/arm64, Android, Docker publish/sign/attest, Play Internal upload, and stable publication [[sources/2026-05-29-v0-1-30-release-result]].
+
+Open maintenance: GitHub Actions emitted Node.js 20 deprecation annotations for several actions; track this before GitHub forces Node.js 24 if it becomes blocking [[sources/2026-05-29-v0-1-30-release-result]].
 
 ## Relationship to older release docs
 

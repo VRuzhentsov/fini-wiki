@@ -2,9 +2,11 @@
 title: Release GitOps
 type: concept
 created: 2026-04-12
-updated: 2026-05-13
-sources: [2026-03-23-release-gitops-setup, 2026-04-12-fini-current-github-actions, 2026-05-12-major-release-prep-screenshot-skill]
+updated: 2026-06-03
+sources: [2026-03-23-release-gitops-setup, 2026-04-12-fini-current-github-actions, 2026-05-12-major-release-prep-screenshot-skill, 2026-05-29-pr-41-feature-plane-mcp-release-handoff, 2026-05-29-v0-1-30-release-result]
 tags: [fini, release, gitops, github-actions, signing, play-store]
+claim_status: locked
+evidence: source-backed
 ---
 
 # Release GitOps
@@ -21,6 +23,18 @@ Marketplace screenshot prep is now tracked separately from the release pipeline.
 - `release-tag.yml` runs on signed annotated `v*` tags that must point to current `origin/main` HEAD [[sources/2026-03-23-release-gitops-setup]] [[sources/2026-04-12-fini-current-github-actions]].
 - The current implementation fans out to Linux, Windows, Android, and Docker jobs before publication, with Linux producing `.deb`, `.rpm`, and `.AppImage`, Windows producing NSIS `setup.exe`, and Android producing signed APK and AAB artifacts [[sources/2026-04-12-fini-current-github-actions]].
 - Stable releases require protected-environment approval; RC releases publish as prereleases [[sources/2026-03-23-release-gitops-setup]] [[sources/2026-04-12-fini-current-github-actions]].
+- Release operations should start from a clean local `main` fast-forwarded to latest `origin/main`; the release tag should point at the exact release metadata commit on `main` [[sources/2026-05-29-pr-41-feature-plane-mcp-release-handoff]].
+- Use `make release VERSION=x.y.z`; do not manually bypass its pre-release gate, metadata commit, signed annotated tag, or push sequencing [[sources/2026-05-29-pr-41-feature-plane-mcp-release-handoff]].
+
+## v0.1.30
+
+Release `v0.1.30` was created from latest `origin/main` after PR #41 merged and published successfully as a stable GitHub release [[sources/2026-05-29-v0-1-30-release-result]].
+
+- Version chosen: `0.1.30`, next patch after `0.1.29` / `v0.1.29` [[sources/2026-05-29-v0-1-30-release-result]].
+- Entry command: `make release VERSION=0.1.30` [[sources/2026-05-29-v0-1-30-release-result]].
+- Local pre-release gate passed, including E2E `32 passed (1.4m)` [[sources/2026-05-29-v0-1-30-release-result]].
+- Signed tag verification succeeded and the remote tag peels to release commit `4044b723bcddbd82e927bf60e70bd399a0eed0c0` [[sources/2026-05-29-v0-1-30-release-result]].
+- Release workflow completed successfully and published stable release `v0.1.30` [[sources/2026-05-29-v0-1-30-release-result]].
 
 ## Security and supply-chain posture
 

@@ -2,8 +2,8 @@
 title: QuestOccurrence
 type: concept
 created: 2026-04-12
-updated: 2026-05-04
-sources: [2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-history-grouped-occurrence-ticket, 2026-05-04-occurrence-completion-sync-e2e-ticket]
+updated: 2026-05-16
+sources: [2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-history-grouped-occurrence-ticket, 2026-05-04-occurrence-completion-sync-e2e-ticket, 2026-05-15-history-grouping-discussion, 2026-05-16-history-grouping-corrective-revision-results]
 tags: [fini, quests, occurrence, repeat, reminders]
 ---
 
@@ -36,6 +36,15 @@ Concrete dated instance produced from a [[QuestSeries]]. In UI and MCP, this is 
 - Current History behavior still renders completed and abandoned same-series occurrences as separate rows [[sources/2026-05-04-history-grouped-occurrence-ticket]].
 - Issue `VRuzhentsov/fini#20` tracks a History-only grouping fix so same-series occurrences can appear as a single History row [[sources/2026-05-04-history-grouped-occurrence-ticket]].
 - This scope does not change the main active quest list grouping, which is already treated as correct [[sources/2026-05-04-history-grouped-occurrence-ticket]].
+
+> [!warning] Superseded by [[sources/2026-05-16-history-grouping-corrective-revision-results]] (2026-05-16)
+> The separate-row History behavior is no longer the target. History grouping is now implemented as a frontend presentation layer using shared `QuestList.vue`; E2E remains deferred after the corrective revision.
+
+- History grouping reuses `QuestList.vue` with `groupChildrenById`, not a dedicated History row component [[sources/2026-05-15-history-grouping-discussion]] [[sources/2026-05-16-history-grouping-corrective-revision-results]].
+- Group restore restores the latest resolved child only; expanded children are restore-only and have no per-child delete/context menu [[sources/2026-05-15-history-grouping-discussion]] [[sources/2026-05-16-history-grouping-corrective-revision-results]].
+- Mixed completed/abandoned groups show a `Mixed N / M` status pill; no count badge appears on the group header [[sources/2026-05-15-history-grouping-discussion]] [[sources/2026-05-16-history-grouping-corrective-revision-results]].
+
+See [[history-grouping]] for the current presentation contract.
 
 ## E2E follow-up
 

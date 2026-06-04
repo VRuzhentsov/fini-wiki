@@ -2,6 +2,16 @@
 
 Append-only chronological record. Parseable: `grep "^## \[" log.md | tail -10`.
 
+## [2026-06-03] ingest | Focus count, Memory, MCP cleanup, runner-owned E2E, and v0.1.30
+
+- Pages touched: [[pages/sources/2026-05-22-focus-entry-count-priority-signal]], [[pages/sources/2026-05-23-memory-graph-page-ticket]], [[pages/sources/2026-05-23-qmd-markdown-quest-memory-research-ticket]], [[pages/sources/2026-05-23-memory-qmd-feature-flag-addendum]], [[pages/sources/2026-05-27-fini-exposed-mcp-cleanup-ticket]], [[pages/sources/2026-05-27-runner-owned-multi-actor-e2e-plan]], [[pages/sources/2026-05-28-cli-pairing-follow-up]], [[pages/sources/2026-05-28-feature-plane-devtools-boundary]], [[pages/sources/2026-05-28-mcp-surface-decision]], [[pages/sources/2026-05-28-runner-owned-e2e-implementation-result]], [[pages/sources/2026-05-29-pr-41-feature-plane-mcp-release-handoff]], [[pages/sources/2026-05-29-v0-1-30-release-result]], [[pages/sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]], [[pages/concepts/focus]], [[pages/concepts/Quest]], [[pages/concepts/CLI]], [[pages/concepts/mcp-contract]], [[pages/concepts/e2e-testing]], [[pages/concepts/github-actions-pipelines]], [[pages/concepts/release-gitops]], [[pages/concepts/settings-ui]], [[pages/concepts/backup-import-export]], [[pages/concepts/memory]], [[pages/concepts/quest-memory-search]], `_hot.md`, `_index.md`
+- Notes: Ingested 13 latest raw docs. Locked shipped `focus_enter_count`, optional Memory/qmd research direction, product MCP retirement in favor of CLI, runner-owned E2E implementation, PR #41 merge state, and v0.1.30 release result.
+
+## [2026-05-25] refactor | Binary plane split contract
+
+- Pages touched: [[pages/concepts/CLI]], [[pages/e2e/cli/README]], `_hot.md`, `log.md`
+- Notes: Updated the CLI contract after repo implementation planning locked `fini` as CLI-only, `fini-app` as desktop GUI, mobile as `ui-plane` only, and Docker/runtime as CLI-only. Removed `fini app` as a supported entry behavior.
+
 ## [2026-04-12] schema | Initial wiki bootstrap
 
 - Pages touched: `AGENTS.md`, `_index.md`, `log.md`
@@ -161,3 +171,13 @@ Append-only chronological record. Parseable: `grep "^## \[" log.md | tail -10`.
 
 - Pages touched: [[pages/sources/2026-05-10-context-menu-redesign-implementation-results]], [[pages/sources/2026-05-12-context-menu-component-design-handoff]], [[pages/sources/2026-05-12-github-issue-22-release-prep-skill]], [[pages/sources/2026-05-12-major-release-prep-screenshot-skill]], [[pages/concepts/context-menu]], [[pages/concepts/release-prep-screenshots]], [[pages/concepts/release-gitops]], `_hot.md`, `_index.md`
 - Notes: Ingested latest raw docs. Preserved #21 as implemented but user-gated, recorded the newer context-menu polish direction, and added the Play Store screenshot release-prep skill thread plus issue #22 validation follow-up.
+
+## [2026-05-16] ingest | Context menu placement and History grouping corrections
+
+- Pages touched: [[pages/sources/2026-05-14-context-menu-polish-pass-implementation]], [[pages/sources/2026-05-14-context-menu-cursor-anchored-placement]], [[pages/sources/2026-05-14-history-grouping-implementation-results]], [[pages/sources/2026-05-15-history-grouping-discussion]], [[pages/sources/2026-05-16-history-grouping-corrective-revision-results]], [[pages/concepts/context-menu]], [[pages/concepts/history-grouping]], [[pages/concepts/QuestOccurrence]], [[pages/concepts/QuestSeries]], `_hot.md`, `_index.md`
+- Notes: Ingested five latest raw docs. Context-menu zone placement is superseded by cursor/trigger anchoring; History grouping's first implementation is superseded by the QuestList-based corrective revision with E2E still deferred.
+
+## [2026-05-21] ingest | Bluetooth, Linux notifications, backup, settings search, and docs policy
+
+- Pages touched: [[pages/sources/2026-04-27-repo-wiki-doc-split]], [[pages/sources/2026-05-16-bluetooth-transport-ticket-grilling]], [[pages/sources/2026-05-16-bluetooth-transport-github-issue]], [[pages/sources/2026-05-17-os-notifications-linux-debug-and-fixes]], [[pages/sources/2026-05-17-os-notifications-linux-sound-and-action-verification]], [[pages/sources/2026-05-19-issue-28-backup-import-export]], [[pages/sources/2026-05-20-issue-28-backup-design-implementation]], [[pages/sources/2026-05-21-search-in-settings-ticket]], [[pages/concepts/DeviceConnection]], [[pages/concepts/SpaceSync]], [[pages/concepts/e2e-testing]], [[pages/concepts/os-notification]], [[pages/concepts/Reminder]], [[pages/concepts/settings-ui]], [[pages/concepts/backup-import-export]], [[pages/concepts/repo-wiki-doc-policy]], `_hot.md`, `_index.md`
+- Notes: Ingested all unindexed raw docs. Captured Bluetooth issue #25 as explicit Android+Linux fallback transport, Linux notification KDE popup/sound/action fixes, backup issue #28 format/UI/CLI/import mapping contract, Settings search overview-only scope, and the repo-specs vs wiki-rationale documentation boundary.

@@ -1,8 +1,19 @@
+---
+title: CLI
+type: concept
+created: 2026-04-26
+updated: 2026-06-03
+sources: [2026-05-27-fini-exposed-mcp-cleanup-ticket, 2026-05-28-cli-pairing-follow-up, 2026-05-28-feature-plane-devtools-boundary, 2026-05-28-mcp-surface-decision, 2026-05-28-runner-owned-e2e-implementation-result, 2026-05-29-pr-41-feature-plane-mcp-release-handoff, 2026-06-03-pr-36-focus-enter-count-product-and-design-result]
+tags: [fini, cli, automation, binary-plane]
+claim_status: locked
+evidence: source-backed
+---
+
 # CLI
 
 ## Purpose
 
-Define the Fini CLI as the primary synchronous interface for automation and skill-driven actions.
+Define the Fini CLI as the primary synchronous interface for automation and skill-driven actions. Product/exposed MCP is abandoned; devtools runtime-control access is a separate testing/control plane [[sources/2026-05-28-mcp-surface-decision]] [[sources/2026-05-29-pr-41-feature-plane-mcp-release-handoff]].
 
 ## Scope
 
@@ -12,7 +23,7 @@ Define the Fini CLI as the primary synchronous interface for automation and skil
 
 ## Non-goals
 
-- Removing or changing MCP behavior in this spec.
+- Reintroducing product/exposed MCP as a supported automation contract.
 - Replacing GUI behavior outside explicit CLI entry contracts.
 
 ## Entry Contracts
@@ -23,10 +34,23 @@ Define the Fini CLI as the primary synchronous interface for automation and skil
 |---|---|
 | `fini` | Return current Focus quest (human output by default in terminal) |
 | `fini --help` | Show full command list and usage |
-| `fini app` | Launch GUI app |
-| `fini mcp` | Start MCP server over stdio (compatibility path retained) |
+| `fini mcp` | Historical/removed exposed MCP surface; do not rely on this as a product automation path |
 
-Desktop launchers and bundled app entrypoints open GUI mode directly.
+Desktop launchers and bundled app entrypoints open GUI mode through the separate `fini-app` binary. `fini app` is not a supported compatibility alias [[sources/2026-05-28-runner-owned-e2e-implementation-result]].
+
+## Binary Plane Contract
+
+- `fini` is the CLI-only binary and is built with the `cli-plane` Cargo feature [[sources/2026-05-28-runner-owned-e2e-implementation-result]].
+- `fini-app` is the GUI binary and desktop builds enable `ui-plane` [[sources/2026-05-28-runner-owned-e2e-implementation-result]] [[sources/2026-05-29-pr-41-feature-plane-mcp-release-handoff]].
+- Mobile builds enable only `ui-plane`; CLI modules and dependencies are excluded from mobile bundles.
+- Docker/runtime builds enable only `cli-plane` and expose `fini` by default.
+
+## Feature-plane boundary
+
+- CLI and UI are first-class surfaces over shared DB/domain/service core [[sources/2026-05-28-feature-plane-devtools-boundary]].
+- Shared core includes DB, quests, reminders, backup, spaces, sync/device state, and other product operations where command groups exist [[sources/2026-05-28-feature-plane-devtools-boundary]].
+- `ui-plane` owns runtime adapters such as Tauri commands, Tauri managed state, OS notification delivery, native theme behavior, windows/plugins, and Playwright/dev-only automation hooks [[sources/2026-05-28-feature-plane-devtools-boundary]].
+- `devtools` is not a product plane; it is production app behavior plus development/test affordances [[sources/2026-05-28-feature-plane-devtools-boundary]].
 
 ## Global Binary Accessibility (Linux)
 
@@ -93,6 +117,8 @@ Desktop launchers and bundled app entrypoints open GUI mode directly.
 - `fini device updates consume-space-mapping [--json]`
 - `fini device debug status [--json]`
 
+Live device pairing from CLI is a follow-up, not fully locked implementation: the desired command set should cover discovery, sending requests, incoming requests, accept, complete, acknowledge, status, and debug output while preserving [[DeviceConnection]] and [[SpaceSync]] semantics [[sources/2026-05-28-cli-pairing-follow-up]].
+
 ### Space Sync
 
 - `fini sync mappings list --peer-device-id <id> [--json]`
@@ -102,9 +128,10 @@ Desktop launchers and bundled app entrypoints open GUI mode directly.
 - `fini sync tick [--peer-device-id <id>] [--json]`
 - `fini sync status [--peer-device-id <id>] [--json]`
 
-## MCP-to-CLI Parity Matrix
+## Historical MCP-to-CLI Parity Matrix
 
-MCP behavior remains implemented. CLI must provide an equivalent command for each existing MCP operation.
+> [!warning] Superseded by [[sources/2026-05-28-mcp-surface-decision]] (2026-05-28)
+> Product/exposed MCP is abandoned. This matrix is historical context for older parity planning, not current implementation guidance.
 
 | Current MCP Tool | Target CLI |
 |---|---|
@@ -125,15 +152,19 @@ MCP behavior remains implemented. CLI must provide an equivalent command for eac
 | `create_reminder` | `fini reminder create --quest-id` |
 | `delete_reminder` | `fini reminder delete --id` |
 
-## Unified Action Service
+## Shared action/core service
 
 Define a single shared service/module as the execution core for all interfaces.
 
-- CLI and MCP both call the same action service methods.
+- CLI calls shared domain/core service methods directly where available [[sources/2026-05-29-pr-41-feature-plane-mcp-release-handoff]].
 - GUI/Tauri commands call the same action service methods.
 - Business rules and persistence logic are implemented once in that shared module.
-- Interface adapters (CLI/MCP/GUI) only handle argument parsing, transport, and output formatting.
+- Interface adapters only handle argument parsing, transport, and output formatting.
 - No interface-specific divergence in mutation or validation logic.
+
+## Focus entry count
+
+CLI Focus commands participate in the same `focus_enter_count` semantics as app UI and reminder handling [[sources/2026-06-03-pr-36-focus-enter-count-product-and-design-result]].
 
 ## Skill Integration Contract
 
@@ -149,6 +180,6 @@ If either check fails, stop immediately, report failure, and provide concrete PA
 - `fini` is globally executable on Linux.
 - `fini --help` lists command groups and examples.
 - `fini` returns current Focus quest.
-- `fini app` launches GUI.
-- CLI command surface reaches full parity with listed MCP operations.
+- Desktop launchers invoke `fini-app`; `fini app` is absent.
+- CLI command surface covers product automation directly; product MCP parity is historical.
 - Skill preflight is documented and enforced before any action.

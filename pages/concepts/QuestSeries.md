@@ -2,8 +2,8 @@
 title: QuestSeries
 type: concept
 created: 2026-04-12
-updated: 2026-05-04
-sources: [2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-history-grouped-occurrence-ticket]
+updated: 2026-05-16
+sources: [2026-04-21-notifications-grilling, 2026-04-24-reminder-due-bridge-grilling, 2026-05-04-history-grouped-occurrence-ticket, 2026-05-15-history-grouping-discussion, 2026-05-16-history-grouping-corrective-revision-results]
 tags: [fini, quests, series, repeat, reminders]
 ---
 
@@ -32,6 +32,8 @@ Template record for repeating quests. A series defines cadence and generation ru
 - Only the closest not-yet-resolved occurrence is surfaced in active quest lists by default.
 - Historical occurrences remain visible in [[HistoryView]] and history endpoints.
 - Active-list grouping should remain unchanged; issue `VRuzhentsov/fini#20` scopes same-series grouping work to History only [[sources/2026-05-04-history-grouped-occurrence-ticket]].
+- Delete series semantics now mean deleting every past and future occurrence with the `series_id` plus the `quest_series` row, always behind confirmation [[sources/2026-05-15-history-grouping-discussion]] [[sources/2026-05-16-history-grouping-corrective-revision-results]].
+- The backend owns series deletion via `delete_quest_series`; the corrective implementation extracts `delete_quest_series_in_db` for unit testing and emits sync events for every quest delete plus the series delete [[sources/2026-05-16-history-grouping-corrective-revision-results]].
 
 ## Reminder behavior
 
